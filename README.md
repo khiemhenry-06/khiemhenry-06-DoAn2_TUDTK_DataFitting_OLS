@@ -4,13 +4,12 @@
 
 | Thành viên | MSSV | Vai trò |
 |------------|------|---------|
-| Khiêm | ... | Quản lý dự án & Tiền xử lý dữ liệu |
-| Nguyên | ... | Kỹ sư Thuật toán – Phần 1 |
-| Nam | ... | Mô phỏng & Khảo sát – Phần 1 & 2 |
-| Minh | ... | Chuyên gia Mô hình – Phần 2 |
-| Kiên | ... | Đánh giá & Kỹ thuật nâng cao |
+| Lê Phạm Đăng Khiêm | 24120341 | Quản lý dự án & Tiền xử lý dữ liệu |
+| Nguyễn Công Nguyên | 24120106 | Kỹ sư Thuật toán – Phần 1 |
+| Trần Thanh Nam | 24120099 | Mô phỏng & Khảo sát – Phần 1 & 2 |
+| Lê Quang Minh | 24120092 | Chuyên gia Mô hình – Phần 2 |
+| Đỗ Trung Kiên | 24120350 | Đánh giá & Kỹ thuật nâng cao |
 
-**Giảng viên hướng dẫn:** *(Điền tên GVHD)*
 
 **Môn học:** Toán Ứng Dụng và Thống Kê – FIT HCMUS
 
