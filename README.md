@@ -141,7 +141,46 @@ Mở lần lượt:
 
 ---
 
+## Hướng Dẫn Sử Dụng Data Pipeline
+
+Class `DataPipeline` (tại `part2/data_pipeline.py`) đã được hoàn thiện giúp tự động hóa toàn bộ quá trình làm sạch và định dạng lại dữ liệu. Mọi người chỉ cần import vào file code/notebook của mình để nhận dữ liệu sạch đưa thẳng vào mô hình:
+
+### 1. Import và Khởi tạo
+```python
+import pandas as pd
+from data_pipeline import DataPipeline
+
+# Đọc dữ liệu thô
+df = pd.read_csv("data/video_games_sales.csv")
+
+# Khởi tạo pipeline (mặc định giữ top 30 nhà phát hành để tránh quá nhiều cột thưa)
+pipeline = DataPipeline(top_n_publishers=30)
+```
+
+### 2. Xử lý không bị rò rỉ dữ liệu (Data Leakage Prevention)
+Quy trình chuẩn bắt buộc phải chia tập dữ liệu thô trước, sau đó thực hiện học các chỉ số (`fit`) trên tập `Train` rồi mới áp dụng sang tập `Test`:
+
+```python
+# Giả sử đã chia X_train, X_test thô từ dataset gốc...
+
+# Bước 1: "Fit" và xử lý tập Train (Tính median, mean, std và học bộ cột dummy)
+X_train_clean = pipeline.fit_transform(X_train)
+
+# Bước 2: Chỉ "Transform" trên tập Test (Dùng lại thông số của tập Train)
+X_test_clean = pipeline.transform(X_test)
+```
+
+### 3. Các tính năng đã được tự động hóa bên trong:
+*   **Xử lý "tbd"**: Tự tìm chuỗi `tbd` ở `User_Score` -> ép về `NaN` -> chuyển kiểu dữ liệu `float`.
+*   **Điền khuyết (Imputation)**: Tự điền khuyết biến số bằng `Median` tính từ tập Train.
+*   **Mã hóa & Rút gọn**: Gom nhóm các `Publisher` nhỏ lẻ thành nhóm `"Other"`, sau đó tự động mã hóa One-Hot Encoding cho `Platform`, `Genre`, `Publisher`.
+*   **Căn chỉnh chiều**: Tự sinh thêm cột giả (`0`) hoặc cắt cột thừa ở tập `Test` sao cho **số lượng và thứ tự cột ở tập Train và Test giống hệt nhau 100%** (đảm bảo nhân ma trận $(X^TX)^{-1}X^Ty$ không bị lỗi).
+*   **Chuẩn hóa**: Áp dụng chuẩn hóa Z-score cho mọi thuộc tính số.
+
+---
+
 ## Reproducibility
+
 
 Tất cả kết quả có thể tái lập được. Seed mặc định: `random_state=42`.
 

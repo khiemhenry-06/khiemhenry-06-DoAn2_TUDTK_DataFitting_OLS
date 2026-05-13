@@ -1,0 +1,120 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc} % Hỗ trợ font tiếng Việt chuẩn LaTeX
+\usepackage[vietnamese]{babel}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{tikz} % Dùng để vẽ viền bìa đẹp mắt giống mẫu
+\usetikzlibrary{calc}
+
+\geometry{a4paper, margin=2cm}
+
+\begin{document}
+
+% ==========================================
+% PHẦN BÌA (COVER PAGE)
+% ==========================================
+\begin{titlepage}
+    % Vẽ khung viền kép cực đẹp theo chuẩn mẫu của bạn
+    \begin{tikzpicture}[remember picture, overlay]
+        \draw[line width=1.5pt, color=blue!70!black] 
+            ($(current page.north west) + (2cm,-2cm)$) rectangle 
+            ($(current page.south east) + (-1.5cm,2cm)$);
+        \draw[line width=0.5pt, color=blue!70!black] 
+            ($(current page.north west) + (2.1cm,-2.1cm)$) rectangle 
+            ($(current page.south east) + (-1.6cm,2.1cm)$);
+            
+        % Vẽ các hoa văn trang trí 4 góc viền (tùy chọn, giống trong hình)
+        \draw[line width=0.5pt] ($(current page.north west) + (1.9cm,-1.9cm)$) rectangle ($(current page.north west) + (2.2cm,-2.2cm)$);
+        \draw[line width=0.5pt] ($(current page.south east) + (-1.4cm,1.9cm)$) rectangle ($(current page.south east) + (-1.7cm,2.2cm)$);
+        \draw[line width=0.5pt] ($(current page.north east) + (-1.4cm,-1.9cm)$) rectangle ($(current page.north east) + (-1.7cm,-2.2cm)$);
+        \draw[line width=0.5pt] ($(current page.south west) + (1.9cm,1.9cm)$) rectangle ($(current page.south west) + (2.2cm,2.2cm)$);
+    \end{tikzpicture}
+
+    \centering
+    
+    % Tiêu đề Trường/Khoa
+    {\fontsize{12pt}{14pt}\selectfont \textbf{TRƯỜNG ĐẠI HỌC KHOA HỌC TỰ NHIÊN HỒ CHÍ MINH}\par}
+    {\fontsize{12pt}{14pt}\selectfont \textbf{KHOA CÔNG NGHỆ THÔNG TIN}\par}
+    
+    \vspace{1.5cm}
+    
+    % LOGO KHTN (Đã tích hợp file Logo-hcmus.jpg của bạn)
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=4.5cm]{Logo-hcmus.jpg}
+    \end{figure}
+    
+    \vspace{1.5cm}
+    
+    % Đồ án môn học
+    {\fontsize{16pt}{19pt}\selectfont \textbf{ĐỒ ÁN MÔN}\par}
+    \vspace{0.2cm}
+    {\fontsize{20pt}{24pt}\selectfont \textbf{TOÁN ỨNG DỤNG VÀ THỐNG KÊ}\par}
+    
+    \vspace{1.5cm}
+    
+    % Tên Đề tài
+    \flushleft
+    \hspace{2cm}{\fontsize{13pt}{15pt}\selectfont \textit{\textbf{ĐỀ TÀI}}\par}
+    
+    \vspace{0.4cm}
+    \centering
+    {\fontsize{18pt}{22pt}\selectfont \textbf{DATA FITTING VÀ PHƯƠNG PHÁP OLS}\par}
+    
+    \vspace{2.5cm}
+    
+    % Danh sách giảng viên hướng dẫn và Sinh viên thực hiện
+    \flushleft
+    \hspace{2cm}
+    \begin{tabular}{ll}
+        \textbf{GV hướng dẫn:} & \textbf{ThS. Lê Nhựt Nam} \\
+                               & \textbf{ThS. Võ Nam Thục Đoan}
+    \end{tabular}
+    
+    \vspace{0.8cm}
+    \hspace{2cm}
+    \textbf{Nhóm sinh viên thực hiện: Nhóm 13} \\
+    
+    \vspace{0.3cm}
+    \hspace{2cm}
+    \begin{tabular}{lll}
+        \textit{\textbf{Họ và tên}} & \textit{\textbf{MSSV}} & \textit{\textbf{Mã lớp}} \\
+        Lê Quang Minh               & 24120092               & 24CTT3 \\
+        Trần Thanh Nam              & 24120099               & 24CTT3 \\
+        Nguyễn Công Nguyên          & 24120106               & 24CTT3 \\
+        Lê Phạm Đăng Khiêm          & 24120341               & 24CTT3 \\
+        Đỗ Trung Kiên               & 24120350               & 24CTT3 \\
+    \end{tabular}
+    
+    \vfill
+    
+    % Chân trang: Địa điểm & Thời gian
+    \centering
+    {\fontsize{12pt}{14pt}\selectfont Hồ Chí Minh, ngày \today\par}
+    
+    \vspace{1.5cm}
+\end{titlepage}
+
+\newpage
+% Bắt đầu đánh số trang từ mục lục
+\pagenumbering{roman}
+
+% ==========================================
+% PHẦN MỤC LỤC (TABLE OF CONTENTS)
+% ==========================================
+\tableofcontents
+\newpage
+
+\pagenumbering{arabic}
+% ==========================================
+% BẮT ĐẦU CÁC CHƯƠNG NỘI DUNG (ĐÃ XÓA TRỐNG)
+% ==========================================
+% Bạn và nhóm có thể thêm các section mới tại đây.
+% Ví dụ:
+% \section{Giới Thiệu}
+% \section{Phần 1: Lý Thuyết...}
+
+\end{document}
