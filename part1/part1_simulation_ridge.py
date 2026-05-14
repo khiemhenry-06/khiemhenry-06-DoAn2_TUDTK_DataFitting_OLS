@@ -12,7 +12,7 @@ beta_true = np.array([2.5, 1.5, -3.0])
 M = 1000
 beta_estimates = []
 
-# 3. Lạy lặp Monte Carlo
+# 3. Vòng lặp Monte Carlo
 for _ in range(M):
     epsilon = np.random.normal(0, 1, N)
     y = X.dot(beta_true) + epsilon
