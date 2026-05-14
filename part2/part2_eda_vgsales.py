@@ -10,7 +10,7 @@ plt.rcParams['figure.figsize'] = (12, 8) # Kích thước mặc định cho các
 
 # --- 1. LOAD DỮ LIỆU ---
 print("Đang load dữ liệu...")
-df = pd.read_csv('Video_Games_Sales_as_at_22_Dec_2016.csv')
+df = pd.read_csv('data/video_games_sales.csv')
 
 # --- 2. TIỀN XỬ LÝ DỮ LIỆU SƠ BỘ ---
 print("Đang tiền xử lý sơ bộ...")
@@ -36,8 +36,6 @@ plt.figure(figsize=(14, 10))
 sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', fmt=".2f", linewidths=.5) # fmt=".2f" để hiển thị 2 chữ số thập phân
 plt.title("Ma trận tương quan Pearson giữa các biến số")
 plt.tight_layout()
-plt.savefig('images/heatmap_correlation.png', dpi=300)
-print("Đã lưu images/heatmap_correlation.png")
 
 # BIỂU ĐỒ 2: BOXPLOT - Phân phối Global_Sales theo Genre
 # Mục tiêu: Phát hiện Outliers (các game bom tấn) và so sánh doanh thu các thể loại.
@@ -53,8 +51,6 @@ plt.title("Phân phối doanh thu (Global_Sales) theo Thể loại (Genre)\n(Gi�
 plt.xticks(rotation=45)
 plt.ylabel("Doanh thu toàn cầu (Triệu USD)")
 plt.tight_layout()
-plt.savefig('images/boxplot_sales_by_genre.png', dpi=300)
-print("Đã lưu images/boxplot_sales_by_genre.png")
 
 # BIỂU ĐỒ 3: SCATTER PLOT - Mối quan hệ giữa Critic_Score và Global_Sales
 # Mục tiêu: Trực quan hóa mối quan hệ tuyến tính mà Heatmap đã chỉ ra.
@@ -71,8 +67,6 @@ plt.title("Mối quan hệ giữa Điểm chuyên gia (Critic_Score) và Doanh t
 plt.xlabel("Điểm chuyên gia")
 plt.ylabel("Doanh thu toàn cầu (Triệu USD)")
 plt.tight_layout()
-plt.savefig('images/scatterplot_critic_sales.png', dpi=300)
-print("Đã lưu images/scatterplot_critic_sales.png")
 
 # Hiển thị biểu đồ ngay sau khi chạy
 plt.show()
