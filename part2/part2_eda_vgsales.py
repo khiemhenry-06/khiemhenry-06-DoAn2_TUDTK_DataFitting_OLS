@@ -4,11 +4,6 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import os
 
-# --- CẤU HÌNH BAN ĐẦU ---
-# Tạo thư mục images nếu chưa tồn tại để lưu ảnh biểu đồ
-if not os.path.exists('images'):
-    os.makedirs('images')
-
 # Setup style vẽ biểu đồ cho đẹp và đồng nhất
 sns.set_theme(style="whitegrid", palette="muted")
 plt.rcParams['figure.figsize'] = (12, 8) # Kích thước mặc định cho các biểu đồ
@@ -79,7 +74,7 @@ plt.tight_layout()
 plt.savefig('images/scatterplot_critic_sales.png', dpi=300)
 print("Đã lưu images/scatterplot_critic_sales.png")
 
-# Hiển thị biểu đồ ngay sau khi chạy còn không thì biểu đồ vẫn được lưu trong thư mục images
-# plt.show()
+# Hiển thị biểu đồ ngay sau khi chạy
+plt.show()
 
 print("\n--- Đã chạy xong EDA! ---")
