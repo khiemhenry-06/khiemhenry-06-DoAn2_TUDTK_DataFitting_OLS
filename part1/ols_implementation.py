@@ -4,12 +4,10 @@ Provides: ols_fit, hat_matrix, rss, tss, r2_score, vif
 
 Accepts numpy arrays or pandas DataFrame/Series.
 
-Phiên bản tiếng Việt:
-Module này cài đặt OLS (Ordinary Least Squares) từ đầu,
-các phép toán chính bao gồm: ma trận Hat, RSS/TSS/R^2,
-ước lượng phương sai phần dư, kiểm định t/p-value cho hệ số,
-và VIF (Variance Inflation Factor) để kiểm tra đa cộng tuyến.
-Hàm chấp nhận đầu vào là numpy array hoặc pandas DataFrame/Series.
+Module này hiện thực hóa OLS hoàn toàn bằng NumPy (không dùng sklearn/statsmodels).
+Bao gồm các hàm để tính ma trận Hat, RSS/TSS/R^2, ước lượng phương sai phần dư,
+kiểm định t/p-value cho từng hệ số, và VIF để kiểm tra đa cộng tuyến.
+Tất cả hàm chấp nhận đầu vào là numpy array hoặc pandas DataFrame/Series.
 """
 from typing import Tuple, Dict
 import numpy as np
@@ -40,9 +38,9 @@ def add_constant(X: np.ndarray) -> np.ndarray:
 def hat_matrix(X: np.ndarray) -> np.ndarray:
     """Compute the hat matrix H = X (X'X)^{-1} X'.
 
-    Tiếng Việt: Tính ma trận Hat H sao cho y_hat = H y.
-    Nếu ma trận thiết kế X đã có cột intercept thì giữ nguyên.
-    Trả về ma trận H (n x n) đối xứng và idempotent.
+    Trả về ma trận 'hat' H sao cho y_hat = H y.
+    Nếu bạn đã truyền vào ma trận thiết kế có cột intercept thì giữ nguyên.
+    Kết quả là ma trận kích thước n x n, đối xứng và có tính chất idempotent (H^2 = H).
     """
     X = _ensure_numpy(X)
     if X.ndim == 1:
@@ -54,9 +52,9 @@ def hat_matrix(X: np.ndarray) -> np.ndarray:
 
 
 def check_idempotent(H: np.ndarray, tol: float = 1e-8) -> bool:
-    """Check if matrix H is idempotent: H^2 = H.
+    """Kiểm tra tính idempotent của ma trận H.
 
-    Tiếng Việt: Trả về True nếu H @ H ≈ H với sai số atol=tol.
+    Trả về True nếu H @ H xấp xỉ bằng H trong sai số `tol`.
     """
     H = _ensure_numpy(H)
     return np.allclose(H @ H, H, atol=tol)
@@ -65,7 +63,7 @@ def check_idempotent(H: np.ndarray, tol: float = 1e-8) -> bool:
 def rss(y: np.ndarray, y_hat: np.ndarray) -> float:
     """Residual Sum of Squares (RSS).
 
-    Tiếng Việt: Tổng bình phương phần dư, dùng để đánh giá sai số mô hình.
+    Tổng bình phương các phần dư (y - y_hat). Dùng để đánh giá mức sai số của mô hình trên dữ liệu quan sát.
     """
     y = _ensure_numpy(y).reshape(-1)
     y_hat = _ensure_numpy(y_hat).reshape(-1)
@@ -75,7 +73,8 @@ def rss(y: np.ndarray, y_hat: np.ndarray) -> float:
 def tss(y: np.ndarray) -> float:
     """Total Sum of Squares (TSS).
 
-    Tiếng Việt: Tổng bình phương sai khác so với trung bình của y.
+    Tổng bình phương sai khác của y so với trung bình của y.
+    Dùng làm chuẩn để so sánh với RSS khi tính R^2.
     """
     y = _ensure_numpy(y).reshape(-1)
     return float(np.sum((y - np.mean(y)) ** 2))
@@ -84,20 +83,20 @@ def tss(y: np.ndarray) -> float:
 def r2_score(y: np.ndarray, y_hat: np.ndarray) -> float:
     """Coefficient of determination R^2.
 
-    Tiếng Việt: Tỷ lệ phương sai của y được mô hình giải thích.
+    Phần trăm phương sai của y được mô hình giải thích (giá trị trong [0,1]).
     """
     return 1.0 - rss(y, y_hat) / tss(y)
 
 
 def model_metrics(y, y_hat, p: int) -> Dict[str, float]:
-    """Compute regression model metrics: RSS, TSS, R2, R2_adj, F-stat and p-value.
+    """Tính các chỉ số đánh giá mô hình hồi quy.
 
-    Parameters:
-    - y: observed responses
-    - y_hat: predicted responses
-    - p: number of parameters in the model (including intercept)
+    Tham số:
+    - `y`: vector quan sát thực tế
+    - `y_hat`: vector dự đoán từ mô hình
+    - `p`: số tham số trong mô hình (bao gồm intercept nếu có)
 
-    Returns dict with keys: RSS, TSS, R2, R2_adj, F_stat, p_value_F
+    Trả về dictionary gồm: RSS, TSS, R2, R2_adj, F_stat, p_value_F, n, p.
     """
     y = _ensure_numpy(y).reshape(-1)
     y_hat = _ensure_numpy(y_hat).reshape(-1)
@@ -135,19 +134,14 @@ def model_metrics(y, y_hat, p: int) -> Dict[str, float]:
 
 
 def ols_fit(X, y, add_intercept: bool = True) -> Dict:
-    """Fit OLS via normal equations.
+    """Ước lượng OLS bằng phương trình bình phương nhỏ nhất.
+    Tham số:
+    - `X`, `y`: dữ liệu (X có thể là numpy array hoặc pandas DataFrame)
+    - `add_intercept`: nếu True, hàm sẽ thêm cột 1 làm hệ số chặn
 
-    Tiếng Việt - Mô tả:
-    - `X`, `y`: dữ liệu (X có thể là ma trận hoặc dataframe);
-    - `add_intercept`: nếu True thêm cột 1 làm hệ số chặn;
-    Trả về dict chứa:
-      - `beta`: vector ước lượng hệ số (bao gồm intercept nếu có),
-      - `y_hat`: giá trị dự đoán, `residuals`: phần dư,
-      - `RSS`, `TSS`, `R2`, `sigma2` (ước lượng phương sai phần dư),
-      - `cov`: ma trận hiệp phương sai của `beta`, `se`: sai số chuẩn,
-      - `t`, `p`: thống kê t và p-value hai phía.
-
-    Công thức chính: \\hat{\\beta} = (X^T X)^{-1} X^T y
+    Hàm trả về một dict chứa các kết quả chính như `beta`, `y_hat`, `residuals`,
+    các chỉ số RSS/TSS/R2, ước lượng phương sai phần dư `sigma2`, ma trận hiệp
+    phương sai của `beta` (`cov`), sai số chuẩn (`se`), cùng thống kê t và p-value.
     """
     X_np = _ensure_numpy(X)
     y_np = _ensure_numpy(y).reshape(-1)
@@ -199,15 +193,15 @@ def ols_fit(X, y, add_intercept: bool = True) -> Dict:
 
 
 def coef_inference(X, y, beta_hat, sigma2) -> 'pd.DataFrame':
-    """Compute inference for coefficients: SE, t-stat, p-value, 95% CI.
+    """Tính các giá trị suy diễn cho hệ số hồi quy.
 
-    Parameters:
-    - X: design matrix (without added intercept or with; function will handle shape)
-    - y: observed responses (used for sample size / df)
-    - beta_hat: estimated coefficients (vector)
-    - sigma2: estimated residual variance (scalar)
+    Tham số:
+    - `X`: ma trận thiết kế (có thể đã có cột intercept hoặc chưa)
+    - `y`: vector quan sát (dùng để xác định kích thước mẫu/df)
+    - `beta_hat`: vector hệ số ước lượng
+    - `sigma2`: ước lượng phương sai phần dư
 
-    Returns a pandas.DataFrame with columns: beta, se, t, p, ci_lower, ci_upper
+    Trả về `pandas.DataFrame` gồm các cột: `beta`, `se`, `t`, `p`, `ci_lower`, `ci_upper`.
     """
     X_np = _ensure_numpy(X)
     if X_np.ndim == 1:
@@ -250,13 +244,12 @@ def coef_inference(X, y, beta_hat, sigma2) -> 'pd.DataFrame':
 
 
 def vif(X, add_intercept: bool = True) -> Tuple[np.ndarray, Dict[int, float]]:
-    """Compute Variance Inflation Factor (VIF) for each regressor.
+    """Tính hệ số VIF (Variance Inflation Factor) cho từng biến giải thích.
 
-    Tiếng Việt: Với mỗi biến giải thích X_j (không tính intercept),
-    ta hồi quy X_j lên các biến còn lại để lấy R_j^2, rồi
-    VIF_j = 1 / (1 - R_j^2). Nếu add_intercept=True thì cột chặn
-    được bỏ qua (gán NaN cho VIF của nó).
-    Trả về (vif_array, r2_dict) nơi r2_dict lưu R^2 cho mỗi cột.
+    Với mỗi biến X_j (ngoại trừ intercept), hồi quy X_j trên các
+    biến còn lại để lấy R_j^2 rồi tính VIF_j = 1 / (1 - R_j^2). Nếu `add_intercept`
+    là True thì hàm sẽ bỏ qua cột chặn (gán NaN cho vị trí đó).
+    Trả về mảng VIF và từ điển lưu R^2 tương ứng.
     """
     X_np = _ensure_numpy(X)
     if X_np.ndim == 1:
