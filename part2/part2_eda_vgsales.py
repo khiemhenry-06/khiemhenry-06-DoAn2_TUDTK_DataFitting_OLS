@@ -10,7 +10,11 @@ plt.rcParams['figure.figsize'] = (12, 8) # Kích thước mặc định cho các
 
 # --- 1. LOAD DỮ LIỆU ---
 print("Đang load dữ liệu...")
-df = pd.read_csv('data/video_games_sales.csv')
+# Cơ chế tìm đường dẫn thông minh để tránh lỗi FileNotFoundError
+csv_path = 'data/video_games_sales.csv'
+if not os.path.exists(csv_path):
+    csv_path = 'part2/data/video_games_sales.csv'
+df = pd.read_csv(csv_path)
 
 # --- 2. TIỀN XỬ LÝ DỮ LIỆU SƠ BỘ ---
 print("Đang tiền xử lý sơ bộ...")
