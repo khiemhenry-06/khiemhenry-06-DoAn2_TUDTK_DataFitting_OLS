@@ -5,7 +5,7 @@
 ## Bộ dữ liệu
 
 - **Tên dữ liệu:** Video Games Sales with Ratings
-- **Nguồn:** Kaggle
+- **Nguồn:** [Kaggle - Video Game Sales with Ratings](https://www.kaggle.com/datasets/rush4ratio/video-game-sales-with-ratings)
 - **File dữ liệu:** `part2/data/video_games_sales.csv`
 - **Kích thước:** 16,719 quan sát và 16 cột
 - **Biến mục tiêu:** `Global_Sales`, biểu diễn doanh thu toàn cầu của game
