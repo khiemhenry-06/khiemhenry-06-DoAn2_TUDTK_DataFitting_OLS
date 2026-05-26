@@ -390,7 +390,7 @@ Trong mô hình hồi quy tuyến tính, OLS là tiêu chuẩn ước lượng t
 
 Trong phần cài đặt nền tảng, nhóm hiện thực các bước trên hoàn toàn bằng NumPy để kiểm soát rõ từng phép toán đại số tuyến tính.
 
-\begin{lstlisting}[caption={Trích đoạn tính nghiệm OLS}]
+\begin{lstlisting}[caption={Trích đoạn tính nghiệm OLS trong \texttt{part1/ols\_implementation.py}}]
 XtX = X_design.T @ X_design
 XtX_inv = np.linalg.pinv(XtX)
 beta = XtX_inv @ X_design.T @ y_np
@@ -448,6 +448,17 @@ Trong \texttt{part1/ols\_implementation.py}, VIF được tính bằng cách l�
 
 \noindent Trong đó, $\lambda$ (hay alpha) là siêu tham số kiểm soát mức độ phạt, và $I$ là ma trận đơn vị. Lưu ý trong quá trình cài đặt thực tế, hệ số chặn (intercept) không bị phạt, do đó phần tử đầu tiên $I_{00}$ được gán bằng 0.
 
+\begin{lstlisting}[caption={Hàm Ridge Regression cài đặt trong \texttt{part1/ridge\_lasso.py}}]
+def ridge_fit(X, y, alpha=1.0):
+    n_features = X.shape[1]
+    I = np.eye(n_features)
+    I[0, 0] = 0
+
+    X_T = X.T
+    beta_hat = np.linalg.inv(X_T.dot(X) + alpha * I).dot(X_T).dot(y)
+    return beta_hat
+\end{lstlisting}
+
 \begin{itemize}
     \item \textbf{Minh họa bằng Ridge Trace:} Nhóm tiến hành vẽ biểu đồ Ridge Trace trên dữ liệu giả lập để quan sát sự co rút của các hệ số hồi quy $\hat{\beta}$. Khi $\lambda$ tăng lên, các hệ số có xu hướng hội tụ dần về 0, giúp giảm phương sai của mô hình và khắc phục hiệu quả hiện tượng đa cộng tuyến.
 \end{itemize}
@@ -476,6 +487,19 @@ Trong \texttt{part1/ols\_implementation.py}, VIF được tính bằng cách l�
 \begin{itemize}
     \item \textbf{Vận dụng thực tế:} Kỹ thuật này được nhóm cài đặt hoàn toàn thủ công bằng thư viện numpy (không sử dụng hàm có sẵn của sklearn) nhằm phục vụ cho bước dò tìm siêu tham số $\lambda$ tối ưu nhất cho mô hình Ridge/Lasso ở Phần 2.
 \end{itemize}
+
+\begin{lstlisting}[caption={Hàm chia K-Fold cài đặt trong \texttt{part1/cross\_validation.py}}]
+def kfold_cv_split(X, y, k=5, random_seed=None):
+    if random_seed is not None:
+        np.random.seed(random_seed)
+
+    n_samples = X.shape[0]
+    indices = np.arange(n_samples)
+    np.random.shuffle(indices)
+
+    fold_sizes = np.full(k, n_samples // k, dtype=int)
+    fold_sizes[:n_samples % k] += 1
+\end{lstlisting}
 
 % ==================== Chương 4: Mô phỏng và EDA ====================
 \part{Mô Phỏng và Khảo Sát Dữ Liệu}
@@ -592,12 +616,33 @@ Pipeline tiền xử lý được xây dựng theo nguyên tắc tách biệt tr
 
 Các quy tắc này được hiện thực trong \texttt{part2/data\_pipeline.py} thông qua lớp \texttt{DataPipeline}. Lớp này học median, mean, std và danh sách publisher phổ biến trên tập train, sau đó áp dụng đồng nhất cho tập test để bảo đảm không rò rỉ thông tin. Đồng thời, cơ chế one-hot encoding được căn chỉnh lại giữa train/test để tránh sai khác số cột khi xuất hiện category mới. Phiên bản pipeline hiện tại cũng bổ sung các cột cần thiết nếu input thiếu cột, giúp notebook và các file mô hình chạy ổn định hơn trong quá trình kiểm thử.
 
-\begin{lstlisting}[caption={Trích đoạn tiền xử lý dữ liệu trong DataPipeline}]
-data['User_Score'] = data['User_Score'].replace(['tbd', 'TBD', ''], np.nan)
-data[col] = pd.to_numeric(data[col], errors='coerce')
-data[col] = data[col].fillna(self.medians[col])
-data[col] = (data[col] - self.means[col]) / self.stds[col]
-df_encoded = pd.get_dummies(data, columns=self.categorical_cols, dtype=float)
+\begin{lstlisting}[caption={Trích đoạn tiền xử lý dữ liệu trong \texttt{part2/data\_pipeline.py}}]
+def _transform_internal(self, X):
+    data = self._preprocess_basic(X)
+
+    for col in self.numerical_cols:
+        fill_value = self.medians.get(col, 0.0)
+        data[col] = data[col].fillna(fill_value)
+
+    for col in self.categorical_cols:
+        data[col] = data[col].fillna('Unknown')
+
+    if len(self.top_publishers) > 0:
+        data['Publisher'] = data['Publisher'].apply(
+            lambda x: x if x in self.top_publishers else 'Other'
+        )
+
+    for col in self.numerical_cols:
+        mean = self.means.get(col, 0.0)
+        std = self.stds.get(col, 1.0)
+        data[col] = (data[col] - mean) / std
+
+    df_encoded = pd.get_dummies(
+        data,
+        columns=self.categorical_cols,
+        prefix=self.categorical_cols,
+        dtype=float
+    )
 \end{lstlisting}
 
 % --- Mô hình hồi quy của phần 2 ---
@@ -611,9 +656,15 @@ Backward elimination loại dần các biến có $p$-value lớn hơn 0.05. Fil
 \subsection{Ridge Regression}
 Ridge dùng regularization $L_2$ để ổn định hệ số trong bối cảnh có nhiều biến one-hot và tương quan giữa đặc trưng. Trong \texttt{part2/model\_comparison.py}, \texttt{RidgeCV} thử các giá trị $\alpha \in \{0.01,0.1,1,10,100,1000\}$ với 5-fold CV.
 
-\begin{lstlisting}[caption={Trích đoạn huấn luyện mô hình trong model\_comparison.py}]
+\begin{lstlisting}[caption={Huấn luyện OLS Full trong \texttt{part2/model\_comparison.py}}]
 full_model = sm.OLS(y_train, X_train_sm).fit()
+print(full_model.summary())
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Chọn biến và huấn luyện RidgeCV trong \texttt{part2/model\_comparison.py}}]
 short_model, selected_features = backward_elimination(X_train_clean, y_train)
+
+alphas_to_test = [0.01, 0.1, 1, 10, 100, 1000]
 ridge_cv_model = RidgeCV(alphas=alphas_to_test, cv=5)
 ridge_cv_model.fit(X_train_clean, y_train)
 \end{lstlisting}
@@ -654,16 +705,16 @@ Biểu đồ Scale-Location cũng cho thấy phương sai của phần dư tăng
 \subsection{Phiên bản kiểm chứng}
 \label{sub:residuals_verification}
 Phần kiểm chứng độc lập được thực hiện trong \texttt{part1/residual\_analysis.py} (cài đặt bằng NumPy/SciPy) để minh họa và đối chiếu với bài toán giả lập. Đoạn cài đặt tính trực tiếp đường chéo Hat, phần dư chuẩn hóa và Cook's Distance (trích):
-\begin{lstlisting}[caption={Hàm kiểm chứng (trích)}]
+\begin{lstlisting}[caption={Các hàm kiểm chứng phần dư trong \texttt{part1/residual\_analysis.py}}]
 def hat_matrix_diag(X):
-        XtX_inv = np.linalg.inv(X.T @ X)
-        H_diag  = np.einsum('ij,jk,ik->i', X, XtX_inv, X)
-        return H_diag
+    XtX_inv = np.linalg.inv(X.T @ X)
+    H_diag = np.einsum('ij,jk,ik->i', X, XtX_inv, X)
+    return H_diag
 
 def standardized_residuals(residuals, sigma2_hat, h_diag):
-        sigma_hat = np.sqrt(sigma2_hat)
-        denom     = sigma_hat * np.sqrt(np.maximum(1 - h_diag, 1e-10))
-        return residuals / denom
+    sigma_hat = np.sqrt(sigma2_hat)
+    denom = sigma_hat * np.sqrt(np.maximum(1 - h_diag, 1e-10))
+    return residuals / denom
 \end{lstlisting}
 
 Phiên bản kiểm chứng sinh file hình độc lập để minh họa (synthetic data, $n=200$) và lưu tại
@@ -742,6 +793,30 @@ Dự đoán được tính theo:
 
 Kernel Ridge được cài đặt trong \texttt{part2/advanced\_methods.py} bằng NumPy với ma trận Gram RBF. Phần này dùng 300 mẫu train, 100 mẫu test và bốn biến số \texttt{Critic\_Score}, \texttt{Critic\_Count}, \texttt{User\_Score}, \texttt{User\_Count} để hạn chế chi phí tính toán $\mathcal{O}(n^2)$ và hiện tượng curse of dimensionality. Kết quả Kernel Ridge được xem là phần nâng cao minh họa, không đưa chung vào bảng ba mô hình bắt buộc vì dùng tập con khác.
 Lý thuyết kernel và phép ánh xạ sang không gian đặc trưng được tham khảo từ [5].
+
+\begin{lstlisting}[caption={Lớp Kernel Ridge Regression trong \texttt{part2/advanced\_methods.py}}]
+class KernelRidgeRegression:
+    def __init__(self, lam=1.0, length_scale=1.0):
+        self.lam = lam
+        self.l   = length_scale
+
+    def _rbf_matrix(self, X1, X2):
+        diff = X1[:, None, :] - X2[None, :, :]
+        sq_dist = np.sum(diff ** 2, axis=2)
+        return np.exp(-sq_dist / (2 * self.l ** 2))
+
+    def fit(self, X, y):
+        self.X_train = np.array(X, dtype=float)
+        self.y_train = np.array(y, dtype=float)
+        n = len(self.y_train)
+        K = self._rbf_matrix(self.X_train, self.X_train)
+        self.alpha = np.linalg.solve(K + self.lam * np.eye(n), self.y_train)
+        return self
+
+    def predict(self, X_test):
+        K_test = self._rbf_matrix(np.array(X_test, dtype=float), self.X_train)
+        return K_test @ self.alpha
+\end{lstlisting}
 
 Trên hình minh họa, đường cong Kernel Ridge bám sát dữ liệu hơn OLS tuyến tính khi $\ell$ được chọn vừa phải; ngược lại, $\ell$ quá nhỏ dẫn tới dao động mạnh, còn $\ell$ quá lớn làm mô hình tiến gần về dạng tuyến tính và mất năng lực mô hình hóa cục bộ. Điều này cho thấy kernel method có thể khai thác quan hệ phi tuyến tiềm ẩn, nhưng chi phí tính toán và yêu cầu chọn tham số thận trọng khiến nó phù hợp hơn như một minh họa mở rộng so với baseline tuyến tính.
 
