@@ -540,27 +540,43 @@ Trước khi xây dựng mô hình, nhóm phân loại các thuộc tính theo �
 \begin{table}[H]
 \centering
 \caption{Tóm tắt vai trò và cách xử lý các thuộc tính chính}
-\renewcommand{\arraystretch}{1.25}
-\small
-\setlength{\tabcolsep}{3pt}
-\begin{tabular}{p{3.1cm}p{4.8cm}p{3.2cm}p{3.6cm}}
+{\footnotesize
+\renewcommand{\arraystretch}{1.32}
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{p{3.6cm}p{5.9cm}p{4.9cm}}
 \rowcolor{reportblue}
-\tableheader{Thuộc tính} & \tableheader{Ý nghĩa} & \tableheader{Vai trò} & \tableheader{Cách xử lý} \\
+\tableheader{Nhóm thuộc tính} & \tableheader{Ý nghĩa trong dữ liệu} & \tableheader{Quyết định xử lý} \\
 \midrule
-\texttt{Name} & Tên trò chơi & Định danh quan sát & Không dùng trực tiếp trong mô hình \\
-\texttt{Platform} & Nền tảng phát hành game & Biến phân loại đầu vào & Điền \texttt{Unknown}, one-hot encoding \\
-\texttt{Year\_of\_Release} & Năm phát hành & Biến thời gian & Không dùng trong pipeline chính do thiếu dữ liệu và cần xử lý riêng \\
-\texttt{Genre} & Thể loại game & Biến phân loại đầu vào & Điền \texttt{Unknown}, one-hot encoding \\
-\texttt{Publisher} & Nhà phát hành & Biến phân loại đầu vào & Giữ top publisher, nhóm còn lại thành \texttt{Other} \\
-\texttt{Critic\_Score} & Điểm đánh giá của chuyên gia & Biến số đầu vào & Chuyển numeric, điền median, chuẩn hóa z-score \\
-\texttt{Critic\_Count} & Số lượt đánh giá của chuyên gia & Biến số đầu vào & Điền median, chuẩn hóa z-score \\
-\texttt{User\_Score} & Điểm đánh giá của người dùng & Biến số đầu vào & Chuyển \texttt{tbd} thành missing, điền median, chuẩn hóa \\
-\texttt{User\_Count} & Số lượt đánh giá của người dùng & Biến số đầu vào & Điền median, chuẩn hóa z-score \\
-\texttt{Developer}, \texttt{Rating} & Nhà phát triển và phân loại độ tuổi & Biến mô tả bổ sung & Không dùng trong pipeline chính để giữ mô hình gọn và ổn định \\
-\texttt{NA\_Sales}, \texttt{EU\_Sales}, \texttt{JP\_Sales}, \texttt{Other\_Sales} & Doanh thu theo khu vực & Biến gây rò rỉ dữ liệu & Loại bỏ khỏi ma trận đặc trưng \\
-\texttt{Global\_Sales} & Tổng doanh thu toàn cầu & Biến mục tiêu & Dùng làm $y$ trong bài toán hồi quy \\
+\rowcolor{gray!10}
+\multicolumn{3}{l}{\textbf{Nhóm định danh và thời gian}} \\
+\texttt{Name} & Tên trò chơi, chủ yếu dùng để nhận diện từng quan sát. & Không dùng trực tiếp trong mô hình vì không mang dạng số/categorical ổn định. \\
+\texttt{Year\_of\_Release} & Năm phát hành, có thể phản ánh xu hướng thị trường theo thời gian. & Không dùng trong pipeline chính do có missing value và cần xử lý thời gian riêng. \\
+\midrule
+\rowcolor{gray!10}
+\multicolumn{3}{l}{\textbf{Nhóm biến phân loại dùng làm đặc trưng}} \\
+\texttt{Platform} & Nền tảng phát hành game như PS4, X360, PC, Wii. & Điền \texttt{Unknown}, sau đó one-hot encoding. \\
+\texttt{Genre} & Thể loại game, ví dụ Action, Sports, Shooter. & Điền \texttt{Unknown}, sau đó one-hot encoding. \\
+\texttt{Publisher} & Nhà phát hành game, có số lượng nhãn lớn. & Giữ top publisher phổ biến, nhóm còn lại thành \texttt{Other}. \\
+\midrule
+\rowcolor{gray!10}
+\multicolumn{3}{l}{\textbf{Nhóm điểm số và lượt đánh giá}} \\
+\texttt{Critic\_Score} & Điểm đánh giá trung bình từ chuyên gia. & Chuyển numeric, điền median, chuẩn hóa z-score. \\
+\texttt{Critic\_Count} & Số lượt đánh giá từ chuyên gia. & Điền median, chuẩn hóa z-score. \\
+\texttt{User\_Score} & Điểm đánh giá trung bình từ người dùng; có giá trị \texttt{tbd}. & Chuyển \texttt{tbd} thành missing, điền median, chuẩn hóa z-score. \\
+\texttt{User\_Count} & Số lượt đánh giá từ người dùng. & Điền median, chuẩn hóa z-score. \\
+\midrule
+\rowcolor{gray!10}
+\multicolumn{3}{l}{\textbf{Nhóm biến mô tả bổ sung}} \\
+\texttt{Developer}, \texttt{Rating} & Nhà phát triển và phân loại độ tuổi của game. & Không dùng trong pipeline chính để giữ mô hình gọn và ổn định. \\
+\midrule
+\rowcolor{gray!10}
+\multicolumn{3}{l}{\textbf{Nhóm doanh thu}} \\
+\texttt{NA\_Sales}, \texttt{EU\_Sales}, \texttt{JP\_Sales}, \texttt{Other\_Sales} & Doanh thu theo khu vực; là thành phần cấu thành \texttt{Global\_Sales}. & Loại bỏ khỏi ma trận đặc trưng để tránh data leakage. \\
+\rowcolor{reportgreen!12}
+\texttt{Global\_Sales} & Tổng doanh thu toàn cầu. & Biến mục tiêu $y$ của bài toán hồi quy. \\
 \bottomrule
 \end{tabular}
+}
 \end{table}
 
 Từ bảng trên, nhóm chỉ giữ các thuộc tính mô tả đặc điểm game trước hoặc tại thời điểm đánh giá như \texttt{Platform}, \texttt{Genre}, \texttt{Publisher}, \texttt{Critic\_Score}, \texttt{Critic\_Count}, \texttt{User\_Score} và \texttt{User\_Count}. Các cột doanh thu khu vực bị loại bỏ vì chúng là thành phần cấu thành trực tiếp của \texttt{Global\_Sales}, nếu đưa vào mô hình sẽ làm sai mục tiêu dự báo.
