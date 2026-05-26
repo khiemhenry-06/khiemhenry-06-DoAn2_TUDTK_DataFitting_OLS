@@ -434,13 +434,15 @@ Các định nghĩa và cách diễn giải các thước đo này nhất quán 
 Trong \texttt{part1/ols\_implementation.py}, VIF được tính bằng cách lần lượt hồi quy từng biến giải thích lên các biến còn lại để thu được $R_j^2$, sau đó suy ra $VIF_j$. Cách làm này phản ánh trực tiếp bản chất thống kê của hiện tượng đa cộng tuyến thay vì chỉ dựa trên kiểm tra tương quan cặp.
 
 \subsection{Ridge, Lasso và Cross-Validation}
-Ridge Regression thêm thành phần phạt $L_2$ vào hàm mục tiêu, nhờ đó thu nhỏ hệ số và ổn định nghiệm khi dữ liệu có nhiều biến tương quan:
+\textbf{Hồi quy Ridge.} Khi dữ liệu đầu vào chứa các đặc trưng có độ tương quan cao, ma trận $\mathbf{X}^T\mathbf{X}$ có thể gần suy biến. Khi đó, nghiệm OLS thông thường dễ có phương sai lớn và hệ số trở nên kém ổn định. Ridge Regression giải quyết vấn đề này bằng cách thêm thành phần phạt $L_2$ vào hàm mất mát, qua đó thu nhỏ hệ số và ổn định nghiệm:
 \begin{formulabox}
 \begin{equation}
     \hat{\boldsymbol{\beta}}_{\text{Ridge}}
     = (\mathbf{X}^T\mathbf{X}+\lambda\mathbf{I})^{-1}\mathbf{X}^T\mathbf{y}.
 \end{equation}
 \end{formulabox}
+
+Trong đó, $\lambda$ (hay $\alpha$ trong code) là siêu tham số kiểm soát mức độ phạt, còn $\mathbf{I}$ là ma trận đơn vị. Để tránh triệt tiêu hệ số chặn, phần tử đầu tiên $I_{00}$ được đặt bằng 0 trong phần cài đặt.
 
 Lasso sử dụng phạt $L_1$ nên có xu hướng đẩy một số hệ số về đúng 0, qua đó thực hiện chọn biến tự động. Trong đồ án, Ridge được ưu tiên ở giai đoạn thực nghiệm vì mục tiêu chính là ổn định hóa mô hình hơn là triệt tiêu đặc trưng.
 
@@ -453,7 +455,7 @@ def ridge_fit(X, y, alpha=1.0):
     return beta_hat
 \end{lstlisting}
 
-Biểu đồ Ridge Trace bên dưới cho thấy các hệ số co dần về 0 khi alpha tăng, qua đó minh họa trực quan cơ chế regularization của Ridge.
+Biểu đồ Ridge Trace bên dưới được vẽ trên dữ liệu giả lập để quan sát sự co rút của các hệ số hồi quy $\hat{\beta}$. Khi $\alpha$ tăng lên, các hệ số có xu hướng hội tụ dần về 0, giúp giảm phương sai của mô hình và hạn chế ảnh hưởng của hiện tượng đa cộng tuyến.
 
 \begin{figure}[H]
     \centering
@@ -461,7 +463,15 @@ Biểu đồ Ridge Trace bên dưới cho thấy các hệ số co dần về 0 
     \caption{Ridge Trace: sự co rút của các hệ số hồi quy theo alpha.}
 \end{figure}
 
-Để chọn siêu tham số $\lambda$, nhóm sử dụng Cross-Validation. Hàm K-Fold được cài đặt thủ công trong \texttt{part1/cross\_validation.py} nhằm bảo đảm quy trình chia dữ liệu minh bạch và không phụ thuộc vào thư viện có sẵn:
+\textbf{K-Fold Cross-Validation.} Để chọn siêu tham số $\lambda$, nhóm sử dụng K-Fold Cross-Validation. Kỹ thuật này chia ngẫu nhiên tập dữ liệu thành $K$ phần có kích thước xấp xỉ nhau. Ở mỗi lần lặp, $K-1$ phần được dùng làm tập huấn luyện và phần còn lại được dùng làm tập kiểm thử. Sai số bình phương trung bình (MSE) được tính trên từng fold, sau đó lấy trung bình để thu được lỗi Cross-Validation:
+
+\begin{formulabox}
+\begin{equation}
+    CV_{(K)} = \frac{1}{K}\sum_{i=1}^{K} MSE_i.
+\end{equation}
+\end{formulabox}
+
+Hàm K-Fold được cài đặt thủ công trong \texttt{part1/cross\_validation.py} bằng NumPy nhằm bảo đảm quy trình chia dữ liệu minh bạch và không phụ thuộc vào hàm có sẵn của scikit-learn:
 
 \begin{lstlisting}[caption={Trích đoạn K-Fold Cross-Validation cài đặt bằng NumPy}]
 indices = np.arange(n_samples)
