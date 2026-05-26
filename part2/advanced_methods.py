@@ -42,7 +42,7 @@ from statsmodels.stats.outliers_influence import OLSInfluence
 BASE_DIR     = os.path.dirname(os.path.abspath(__file__))
 DATA_CSV     = os.path.join(BASE_DIR, "data", "video_games_sales.csv")
 PIPELINE_DIR = BASE_DIR
-IMAGE_DIR    = os.path.join(os.path.dirname(BASE_DIR), "report", "images_kien")
+IMAGE_DIR    = os.path.join(os.path.dirname(BASE_DIR), "report", "images")
 os.makedirs(IMAGE_DIR, exist_ok=True)
 
 def save_report_figure(filename, **kwargs):
@@ -228,9 +228,9 @@ ax4.set(xlabel="Leverage", ylabel="Std Residuals",
         title="4. Leverage vs Residuals\n→ Tìm điểm ảnh hưởng lớn")
 ax4.legend(fontsize=8)
 
-save_report_figure('residual_analysis.png', dpi=150,
+save_report_figure('residual_analysis_part2.png', dpi=150,
                    bbox_inches='tight', facecolor='white')
-print("  ✓ Đã lưu: residual_analysis.png")
+print("  ✓ Đã lưu: residual_analysis_part2.png")
 plt.close(fig)
 
 _, shapiro_p = stats.shapiro(train_std_resid[:200])
@@ -420,8 +420,8 @@ print(summary.to_string(index=False))
 best_overall = summary.loc[summary['R2'].idxmax(), 'Model']
 print(f"\n  → Mô hình tốt nhất theo R²: {best_overall}")
 print(f"  → Residual Analysis đã dùng: {best_name}")
-print(f"\n  Files đã tạo (report/images_kien/):")
-print("    residual_analysis.png")
+print(f"\n  Files đã tạo (report/images/):")
+print("    residual_analysis_part2.png")
 print("    feature_importance.png")
 print("    kernel_regression_comparison.png")
 print("\n  XONG! ✓")

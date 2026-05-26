@@ -1,3 +1,6 @@
+# Trần Thanh Nam
+from pathlib import Path
+
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.linear_model import Ridge
@@ -50,4 +53,8 @@ if __name__ == "__main__":
     plt.ylabel('Giá trị các hệ số (Coefficients)')
     plt.title('Ridge Trace: Sự co rút của các hệ số hồi quy theo Alpha')
     plt.grid(True, which="both", ls="--", alpha=0.5)
+    output_path = Path(__file__).resolve().parent.parent / 'report' / 'images' / 'ridge_trace.png'
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=300, bbox_inches='tight')
     plt.show()

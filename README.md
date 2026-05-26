@@ -1,233 +1,72 @@
-# Đồ Án 2: Data Fitting và Phương Pháp OLS
+# Đồ án 2: Data Fitting và Phương pháp OLS
 
-> [!IMPORTANT]
-> ## 📊 BẢNG THEO DÕI TIẾN ĐỘ THỰC HIỆN ĐỒ ÁN 2 (CẬP NHẬT MỚI NHẤT)
-> Bảng này giúp nhóm trưởng và các thành viên dễ dàng kiểm soát các đầu việc đã hoàn thành, phần còn thiếu và các file đang được đồng bộ vào notebook/báo cáo.
->
-> * **Tổng số thành viên:** 5 thành viên (Khiêm, Nguyên, Minh, Nam, Kiên)
-> * **Trạng thái tổng quan:** Phần 2 đã có đủ luồng EDA -> Pipeline -> Mô hình -> Đánh giá. Phần 1 còn thiếu file `residual_analysis.py`; phần Ridge/Lasso hiện mới có Ridge và K-Fold, chưa có Lasso/ridge trace đầy đủ.
-> * **Báo cáo:** `report/report.tex` và `report/report.pdf` đã có. Những phần chưa hoàn thiện được đánh dấu TODO trong báo cáo.
->
-> ### 1. PHẦN 1: BÁO CÁO LÝ THUYẾT & XÂY DỰNG OLS TỪ ĐẦU (FROM SCRATCH)
->
-> | Thành viên | Nhiệm vụ đảm nhận | File Code liên quan | Trạng thái | Ghi chú & Đánh giá |
-> | :--- | :--- | :--- | :---: | :--- |
-> | **Nguyên** | Xây dựng thuật toán hồi quy OLS từ đầu bằng toán ma trận NumPy | `part1/ols_implementation.py` | 🟢 **Hoàn thành** | Đã có `ols_fit`, ma trận Hat, RSS/TSS/R², Adj-R², kiểm định F, kiểm định t/p-value, khoảng tin cậy và VIF. Notebook Phần 1 đã minh họa các hàm chính. |
-> | **Nam** | Ridge, Lasso, Cross Validation và Monte Carlo | `part1/ridge_lasso.py`<br>`part1/cross_validation.py`<br>`part1/part1_notebook.ipynb` | 🟡 **Hoàn thành một phần** | Đã có `ridge_fit`, `kfold_cv_split`, phần Monte Carlo và minh họa trong notebook. Còn thiếu Lasso Regression và ridge trace đầy đủ nếu bám sát toàn bộ yêu cầu đề. |
-> | **Kiên** | Xây dựng lý thuyết và vẽ biểu đồ phân tích phần dư (Residual Analysis) | `part1/residual_analysis.py` | 🔴 **Chưa làm** | File hiện chỉ có header tên người làm. Báo cáo đã để TODO để bổ sung sau. |
->
-> ### 2. PHẦN 2: ỨNG DỤNG HỒI QUY TRÊN DỮ LIỆU THỰC TẾ (VIDEO GAMES SALES)
->
-> | Thành viên | Nhiệm vụ đảm nhận | File Code liên quan | Trạng thái | Ghi chú & Đánh giá |
-> | :--- | :--- | :--- | :---: | :--- |
-> | **Nam** | Phân tích dữ liệu khám phá (EDA), vẽ Heatmap, Boxplot, Scatterplot, Histogram | `part2/part2_notebook.ipynb`<br>`report/images_nam/` | 🟢 **Hoàn thành** | Code EDA đã được đưa trực tiếp vào notebook và lưu ảnh sang `report/images_nam`. |
-> | **Khiêm** | Thiết kế Pipeline tiền xử lý dữ liệu tùy biến (`DataPipeline`) | `part2/data_pipeline.py`<br>`part2/part2_notebook.ipynb` | 🟢 **Hoàn thành** | Pipeline xử lý `tbd`, missing values, gom nhóm Publisher, one-hot encoding, chuẩn hóa và căn chỉnh cột train/test để tránh rò rỉ dữ liệu. |
-> | **Minh** | Huấn luyện 3 mô hình hồi quy (OLS Full, Stepwise Backward, Ridge CV) và xuất dự đoán | `part2/model_comparison.py`<br>`part2/part2_notebook.ipynb` | 🟢 **Hoàn thành** | Đã huấn luyện 3 mô hình, chọn alpha bằng Cross-Validation và xuất `selected_features.csv`, `model_predictions.csv`. |
-> | **Kiên** | Đánh giá sai số, phân tích phần dư, feature importance, Kernel Ridge Regression | `part2/advanced_methods.py`<br>`part2/part2_notebook.ipynb`<br>`report/images_kien/` | 🟢 **Hoàn thành** | Đã có MAE/RMSE/R², residual plots, feature importance và Kernel Ridge Regression; ảnh được lưu sang `report/images_kien`. |
->
-> ---
->
-> ### 📈 KẾ HOẠCH HÀNH ĐỘNG TIẾP THEO (ACTION ITEMS)
-> - [ ] **Đỗ Trung Kiên:** Hoàn thiện `part1/residual_analysis.py` và bổ sung hình/nhận xét tương ứng vào báo cáo.
-> - [ ] **Trần Thanh Nam:** Bổ sung Lasso Regression và ridge trace trong `part1/ridge_lasso.py` nếu nhóm muốn đáp ứng đầy đủ hơn phần regularization của đề.
-> - [ ] **Nhóm trưởng:** Trước khi nộp, rà soát và có thể xóa các thư mục `__pycache__/`; cân nhắc bỏ `link_data.txt` nếu không sử dụng.
+Đồ án thực hiện hai nội dung chính: trình bày và cài đặt các thành phần nền tảng của Ordinary Least Squares (OLS), sau đó áp dụng hồi quy tuyến tính lên bộ dữ liệu thực tế `Video Games Sales` để dự đoán `Global_Sales`.
 
----
+## Thành viên nhóm
 
-## Thông Tin Nhóm
+| Thành viên | MSSV | Vai trò chính |
+| --- | --- | --- |
+| Lê Phạm Đăng Khiêm | 24120341 | Quản lý dự án, tiền xử lý dữ liệu, tổng hợp báo cáo |
+| Lê Quang Minh | 24120092 | Huấn luyện và so sánh mô hình |
+| Trần Thanh Nam | 24120099 | EDA, mô phỏng Monte Carlo, Ridge/K-Fold |
+| Nguyễn Công Nguyên | 24120106 | OLS từ đầu, Hat Matrix, kiểm định, VIF |
+| Đỗ Trung Kiên | 24120350 | Phân tích phần dư, feature importance, Kernel Ridge |
 
-| Thành viên | MSSV | Vai trò |
-|------------|------|---------|
-| Lê Phạm Đăng Khiêm | 24120341 | Quản lý dự án & Tiền xử lý dữ liệu |
-| Nguyễn Công Nguyên | 24120106 | Kỹ sư Thuật toán – Phần 1 |
-| Trần Thanh Nam | 24120099 | Mô phỏng & Khảo sát – Phần 1 & 2 |
-| Lê Quang Minh | 24120092 | Chuyên gia Mô hình – Phần 2 |
-| Đỗ Trung Kiên | 24120350 | Đánh giá & Kỹ thuật nâng cao |
+## Cấu trúc thư mục
 
-
-**Môn học:** Toán Ứng Dụng và Thống Kê – FIT HCMUS
-
----
-
-## Hướng Dẫn Làm Việc Nhóm Trên GitHub
-
-Để đảm bảo tiến độ và tránh xung đột mã nguồn (conflict), nhóm thống nhất quy trình sau:
-
-### 1. Quản lý Nhánh (Branching Strategy)
-- **`main`**: Nhánh chính, chứa code ổn định. Không push code trực tiếp lên nhánh này trừ các file tài liệu cơ bản ban đầu.
-- **Nhánh tính năng**: Mỗi thành viên tạo nhánh riêng từ `main` để làm nhiệm vụ của mình theo cú pháp `feature/<ten-thanh-vien>-<ten-tinh-nang>`.
-  - Ví dụ: `feature/khiem-datapipeline`, `feature/nguyen-ols`, `feature/nam-eda`.
-
-### 2. Quy trình làm việc hàng ngày
-1. Cập nhật code mới nhất từ repo về máy:
-   ```bash
-   git checkout main
-   git pull origin main
-   ```
-2. Tạo nhánh mới để bắt đầu code (nếu chưa tạo):
-   ```bash
-   git checkout -b feature/ten-nhanh
-   ```
-3. Trong quá trình code, commit thường xuyên kèm thông điệp rõ nghĩa:
-   ```bash
-   git add .
-   git commit -m "feat: hoàn thành xử lý missing values cho DataPipeline"
-   ```
-4. Đẩy code lên GitHub định kỳ:
-   ```bash
-   git push origin feature/ten-nhanh
-   ```
-
-### 3. Pull Request (PR) & Review
-- Khi đã làm xong, lên GitHub chọn **New Pull Request** để merge từ nhánh của bạn vào `main`.
-- Gán tag (Assignee) tên mình và add Reviewer là Khiêm (PM) hoặc các bạn code cùng phần đó.
-- Sau khi đã review ok, tiến hành **Merge Pull Request**.
-
-### 4. Một số quy tắc chung
-- **Tuyệt đối không commit** các file môi trường ảo (`venv/`), cache (`__pycache__/`) hay checkpoint của notebook.
-- **Hạn chế xung đột (Conflict)**: Liên tục pull code mới nhất về gộp vào nhánh feature của mình trước khi tạo PR.
-- Dữ liệu lớn (`.csv`) chỉ cần push một lần vào đúng thư mục `part2/data/`, không cần push lại nhiều lần.
-
----
-
-## Mô Tả Đồ Án
-
-Đồ án gồm 2 phần chính:
-
-1. **Phần 1 – Lý thuyết & Minh họa:** Cài đặt thủ công thuật toán OLS, ma trận Hat, phân tích phần dư, mô phỏng kiểm chứng Gauss-Markov bằng Python (không dùng sklearn cho luồng chính).
-
-2. **Phần 2 – Ứng dụng thực tế:** Áp dụng hồi quy tuyến tính trên bộ dữ liệu **Video Games Sales** để dự báo doanh thu toàn cầu (`Global_Sales`), bao gồm tiền xử lý dữ liệu, xây dựng mô hình, và đánh giá kết quả.
-
----
-
-## Bộ Dữ Liệu
-
-- **Tên:** Video Game Sales with Ratings
-- **Nguồn:** [Kaggle – rush4ratio/video-game-sales-with-ratings](https://www.kaggle.com/datasets/rush4ratio/video-game-sales-with-ratings)
-- **Kích thước:** 16,719 dòng × 16 cột
-- **Biến mục tiêu:** `Global_Sales` (doanh thu toàn cầu, triệu USD)
-- **Missing values:** Critic_Score (51.3%), User_Score (40.1% + 2,425 giá trị "tbd"), User_Count (54.6%), Developer (39.6%), Rating (40.5%)
-
-File dữ liệu gốc: `part2/data/video_games_sales.csv`
-
----
-
-## Cấu Trúc Thư Mục
-
-```
+```text
 .
-├── README.md                         # File hướng dẫn (file này)
-├── requirements.txt                  # Các thư viện Python cần cài đặt
-├── report/
-│   ├── report.tex                    # Báo cáo LaTeX
-│   └── report.pdf                    # Báo cáo đã biên dịch
-├── part1/                            # Phần 1: Lý thuyết và minh họa
-│   ├── ols_implementation.py         # Cài đặt OLS từ đầu
-│   ├── ridge_lasso.py                # Ridge & Lasso Regression
-│   ├── residual_analysis.py          # Phân tích phần dư
-│   ├── cross_validation.py           # K-fold Cross Validation
-│   └── part1_notebook.ipynb          # Notebook minh họa lý thuyết
-└── part2/                            # Phần 2: Ứng dụng thực tế
-    ├── data/
-    │   └── video_games_sales.csv     # Dữ liệu gốc
-    ├── data_pipeline.py              # Pipeline tiền xử lý dữ liệu
-    ├── model_comparison.py           # So sánh mô hình
-    ├── advanced_methods.py           # Kỹ thuật nâng cao (Kernel/Bayesian)
-    └── part2_notebook.ipynb          # Notebook phân tích và thảo luận
+|-- README.md
+|-- requirements.txt
+|-- report/
+|   |-- report.pdf
+|   `-- report.tex
+|-- part1/
+|   |-- ols_implementation.py      # OLS from scratch
+|   |-- ridge_lasso.py             # Ridge Regression và ridge trace
+|   |-- residual_analysis.py       # Phân tích phần dư
+|   |-- cross_validation.py        # K-fold Cross Validation
+|   `-- part1_notebook.ipynb       # Minh họa lý thuyết
+`-- part2/
+    |-- data/
+    |   `-- video_games_sales.csv  # Dữ liệu gốc
+    |-- data_pipeline.py           # Tiền xử lý dữ liệu
+    |-- model_comparison.py        # So sánh mô hình
+    |-- advanced_methods.py        # Phân tích nâng cao
+    `-- part2_notebook.ipynb       # Thực nghiệm phần 2
 ```
 
----
+## Cài đặt môi trường
 
-## Hướng Dẫn Cài Đặt
-
-### 1. Clone repository
-
-```bash
-git clone <repo-url>
-cd Group_<ID>
-```
-
-### 2. Tạo môi trường ảo (khuyến nghị)
-
-```bash
-python -m venv venv
-# Windows:
-venv\Scripts\activate
-# macOS/Linux:
-source venv/bin/activate
-```
-
-### 3. Cài đặt thư viện
+Yêu cầu Python 3.10+.
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Chạy Notebook
+## Cách chạy và tìm hiểu đồ án
+
+1. Đọc báo cáo chính tại `report/report.pdf`.
+2. Mở `part1/part1_notebook.ipynb` để xem phần minh họa lý thuyết OLS, Ridge, K-Fold và Monte Carlo.
+3. Mở `part2/part2_notebook.ipynb` để xem luồng xử lý dữ liệu thực tế, huấn luyện mô hình và đánh giá kết quả.
+4. Có thể chạy từng file Python riêng:
 
 ```bash
-jupyter notebook
+python part1/ols_implementation.py
+python part1/ridge_lasso.py
+python part1/residual_analysis.py
+python part1/cross_validation.py
+python part2/data_pipeline.py
+python part2/model_comparison.py
+python part2/advanced_methods.py
 ```
 
-Mở lần lượt:
-- `part1/part1_notebook.ipynb` — Phần lý thuyết
-- `part2/part2_notebook.ipynb` — Phần ứng dụng
+## Kết quả và hình ảnh
 
----
+Sau khi chạy notebook hoặc các script sinh biểu đồ, hình ảnh được lưu trong thư mục `report/images/` trên máy local. Thư mục này là output sinh ra khi chạy chương trình nên không được đưa lên Git theo cấu trúc nộp bài tối giản.
 
-## Hướng Dẫn Sử Dụng Data Pipeline
+Các file kết quả trung gian như `part2/data/model_predictions.csv`, `part2/data/selected_features.csv`, file LaTeX phụ trợ `.aux/.log/.toc/.out`, cache Python và checkpoint notebook cũng được xem là file sinh ra trong quá trình chạy, không cần push lên repository.
 
-Class `DataPipeline` (tại `part2/data_pipeline.py`) đã được hoàn thiện giúp tự động hóa toàn bộ quá trình làm sạch và định dạng lại dữ liệu. Mọi người chỉ cần import vào file code/notebook của mình để nhận dữ liệu sạch đưa thẳng vào mô hình:
+## Ghi chú nộp bài
 
-### 1. Import và Khởi tạo
-```python
-import pandas as pd
-from data_pipeline import DataPipeline
-
-# Đọc dữ liệu thô
-df = pd.read_csv("data/video_games_sales.csv")
-
-# Khởi tạo pipeline (mặc định giữ top 30 nhà phát hành để tránh quá nhiều cột thưa)
-pipeline = DataPipeline(top_n_publishers=30)
-```
-
-### 2. Xử lý không bị rò rỉ dữ liệu (Data Leakage Prevention)
-Quy trình chuẩn bắt buộc phải chia tập dữ liệu thô trước, sau đó thực hiện học các chỉ số (`fit`) trên tập `Train` rồi mới áp dụng sang tập `Test`:
-
-```python
-# Giả sử đã chia X_train, X_test thô từ dataset gốc...
-
-# Bước 1: "Fit" và xử lý tập Train (Tính median, mean, std và học bộ cột dummy)
-X_train_clean = pipeline.fit_transform(X_train)
-
-# Bước 2: Chỉ "Transform" trên tập Test (Dùng lại thông số của tập Train)
-X_test_clean = pipeline.transform(X_test)
-```
-
-### 3. Các tính năng đã được tự động hóa bên trong:
-*   **Xử lý "tbd"**: Tự tìm chuỗi `tbd` ở `User_Score` -> ép về `NaN` -> chuyển kiểu dữ liệu `float`.
-*   **Điền khuyết (Imputation)**: Tự điền khuyết biến số bằng `Median` tính từ tập Train.
-*   **Mã hóa & Rút gọn**: Gom nhóm các `Publisher` nhỏ lẻ thành nhóm `"Other"`, sau đó tự động mã hóa One-Hot Encoding cho `Platform`, `Genre`, `Publisher`.
-*   **Căn chỉnh chiều**: Tự sinh thêm cột giả (`0`) hoặc cắt cột thừa ở tập `Test` sao cho **số lượng và thứ tự cột ở tập Train và Test giống hệt nhau 100%** (đảm bảo nhân ma trận $(X^TX)^{-1}X^Ty$ không bị lỗi).
-*   **Chuẩn hóa**: Áp dụng chuẩn hóa Z-score cho mọi thuộc tính số.
-
----
-
-## Reproducibility
-
-
-Tất cả kết quả có thể tái lập được. Seed mặc định: `random_state=42`.
-
----
-
-## Phân Công Công Việc
-
-| Giai đoạn | Thành viên | Nhiệm vụ | Hạn chót |
-|-----------|-----------|-----------|---------|
-| 1 (12-17/05) | Khiêm | Cấu trúc thư mục, DataPipeline | 17/05 |
-| 1 (12-17/05) | Nguyên | OLS, Hat matrix, kiểm định | 17/05 |
-| 1 (12-15/05) | Nam | EDA bộ dữ liệu Video Games | 15/05 |
-| 2 (18-22/05) | Nam | Monte Carlo, K-fold CV | 20/05 |
-| 2 (18-22/05) | Minh | Train/Test split, 3 mô hình | 22/05 |
-| 3 (23-26/05) | Kiên & Nguyên | Đánh giá, Kỹ thuật nâng cao | 26/05 |
-| 4 (27-29/05) | Khiêm & Minh | Tổng hợp báo cáo, rà soát | 28/05 |
+Các file cần nộp chính gồm source code trong `part1/`, `part2/`, dữ liệu gốc `video_games_sales.csv`, `requirements.txt`, `README.md`, `report/report.tex` và `report/report.pdf`.

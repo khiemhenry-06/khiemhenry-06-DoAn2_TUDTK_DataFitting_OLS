@@ -1,4 +1,7 @@
+% --- Cấu hình tài liệu ---
 \documentclass[12pt,a4paper]{article}
+
+% --- Gói và font chữ ---
 \usepackage{fontspec}
 \setmainfont{Times New Roman}
 \setsansfont{Arial}
@@ -15,6 +18,7 @@
 \usepackage{longtable}
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage[most]{tcolorbox}
 \usepackage{colortbl}
 \usepackage{float}
 \usepackage{caption}
@@ -28,6 +32,7 @@
 \usepackage{tocloft}
 \usepackage{lastpage}
 
+% --- Canh lề và link PDF ---
 \geometry{a4paper, top=2.5cm, bottom=2.6cm, left=2.7cm, right=2.2cm, headheight=15pt}
 \hypersetup{
     colorlinks=true,
@@ -37,18 +42,36 @@
 }
 \hypersetup{pageanchor=false}
 
+% --- Giãn dòng và đoạn văn ---
 \onehalfspacing
 \setlength{\parindent}{1.2cm}
 \setlength{\parskip}{0.2em}
 \setlength{\emergencystretch}{2em}
 \sloppy
 
+% --- Màu sắc và môi trường dùng chung ---
 \definecolor{reportblue}{RGB}{24,74,126}
 \definecolor{reportlightblue}{RGB}{232,241,250}
 \definecolor{reportgray}{RGB}{82,91,102}
 \definecolor{reportgreen}{RGB}{36,122,76}
 \definecolor{todocolor}{RGB}{255,248,220}
+% Màu/môi trường phụ cho các đoạn chèn thêm
+\definecolor{titleblue}{RGB}{210,225,242}
+\newenvironment{nhanxet}{\begin{quote}\small\itshape}{\end{quote}}
 
+% Khung công thức toán học
+\newtcolorbox{formulabox}{
+    colback=reportlightblue!28,
+    colframe=reportblue!75!black,
+    boxrule=0.7pt,
+    arc=2pt,
+    left=6pt,
+    right=6pt,
+    top=4pt,
+    bottom=4pt
+}
+
+% --- Tên hiển thị tiếng Việt ---
 \renewcommand{\contentsname}{Mục lục}
 \renewcommand{\listfigurename}{Danh mục hình ảnh}
 \renewcommand{\listtablename}{Danh mục bảng}
@@ -88,6 +111,7 @@
 \renewcommand{\cftsubsecpagefont}{\small\color{reportgray}}
 \renewcommand{\cftsubsecleader}{\cftdotfill{\cftdotsep}}
 
+% --- Header và footer ---
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[L]{\small\textcolor{reportgray}{Data Fitting và phương pháp OLS}}
@@ -101,6 +125,7 @@
     \renewcommand{\headrulewidth}{0pt}%
 }
 
+% --- Kiểu tiêu đề chương/mục ---
 \titleformat{\part}[display]
     {\thispagestyle{plain}\centering\bfseries\color{reportblue}}
     {\Large\partname~\thepart}
@@ -119,6 +144,7 @@
     {\thesubsection}{0.75em}{}
 \titlespacing*{\subsection}{0pt}{0.75em}{0.30em}
 
+% --- Chú thích hình/bảng ---
 \captionsetup{
     font=small,
     labelfont={bf,color=reportblue},
@@ -127,6 +153,7 @@
     singlelinecheck=false
 }
 
+% --- Danh sách, bảng và ô nổi bật ---
 \setlist[itemize]{topsep=0.35em, itemsep=0.2em, leftmargin=1.4cm}
 \setlist[enumerate]{topsep=0.35em, itemsep=0.2em, leftmargin=1.4cm}
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
@@ -135,6 +162,7 @@
 \newcommand{\bestcell}[1]{\textcolor{reportgreen}{\textbf{#1}}}
 \renewcommand{\arraystretch}{1.24}
 
+% --- Ghi chú TODO trong báo cáo ---
 \newcommand{\todo}[1]{
     \begin{center}
     \fcolorbox{orange!80!black}{todocolor}{%
@@ -143,12 +171,14 @@
     \end{center}
 }
 
+% --- Chèn hình an toàn nếu file ảnh chưa có ---
 \newcommand{\safeincludegraphics}[2][]{%
     \IfFileExists{#2}{\includegraphics[#1]{#2}}{%
         \fbox{\parbox{0.85\textwidth}{\centering Chưa có hình: \texttt{\detokenize{#2}}}}%
     }%
 }
 
+% --- Hiển thị code Python ---
 \lstset{
   language=Python,
   basicstyle=\ttfamily\small,
@@ -166,6 +196,7 @@
 
 \begin{document}
 
+% --- Trang bìa ---
 \begin{titlepage}
     \begin{tikzpicture}[remember picture, overlay]
         \draw[line width=1.5pt, color=blue!70!black]
@@ -224,6 +255,7 @@
     \vspace{0.6cm}
 \end{titlepage}
 
+% --- Mục lục ---
 \newpage
 \pagenumbering{roman}
 \tableofcontents
@@ -231,6 +263,7 @@
 \hypersetup{pageanchor=true}
 \pagenumbering{arabic}
 
+% ==================== Chương 1: Giới thiệu ====================
 \part{Giới Thiệu Đồ Án}
 
 \section{Mục tiêu tổng quát}
@@ -287,6 +320,7 @@ Lê Quang Minh & Xây dựng và so sánh các mô hình hồi quy bắt buộc,
 \rowcolors{2}{}{}
 \end{table}
 
+% ==================== Chương 2: Cấu trúc dự án ====================
 \part{Tổng Quan Cấu Trúc Dự Án}
 
 \section{Kiến trúc mã nguồn}
@@ -315,20 +349,25 @@ Quy trình thực hiện chung:
     \item Phân tích phần dư, điểm ảnh hưởng và tầm quan trọng đặc trưng.
 \end{enumerate}
 
+% ==================== Chương 3: Lý thuyết OLS ====================
 \part{Lý Thuyết Data Fitting và OLS}
 
 \section{Bài toán Data Fitting}
 Cho tập dữ liệu $\mathcal{D} = \{(\mathbf{x}_i, y_i)\}_{i=1}^{n}$ với $\mathbf{x}_i \in \mathbb{R}^p$, $y_i \in \mathbb{R}$. Bài toán data fitting là tìm hàm $f$ sao cho $f(\mathbf{x}_i)$ xấp xỉ tốt nhất $y_i$ theo một tiêu chí sai số đã chọn.
 
 Trong mô hình hồi quy tuyến tính:
+\begin{formulabox}
 \begin{equation}
     y_i = \beta_0 + \beta_1x_{i1} + \cdots + \beta_px_{ip} + \varepsilon_i
         = \mathbf{x}_i^T\boldsymbol{\beta} + \varepsilon_i.
 \end{equation}
+\end{formulabox}
 Dạng ma trận:
+\begin{formulabox}
 \begin{equation}
     \mathbf{y} = \mathbf{X}\boldsymbol{\beta} + \boldsymbol{\varepsilon}.
 \end{equation}
+\end{formulabox}
 
 \section{Các giả thiết Gauss--Markov}
 Các giả thiết chính gồm tuyến tính theo tham số, không đa cộng tuyến hoàn hảo, ngoại sinh $E[\boldsymbol{\varepsilon}|\mathbf{X}]=0$, phương sai không đổi và không tự tương quan. Khi các giả thiết này thỏa mãn, OLS là ước lượng tuyến tính không chệch tốt nhất (BLUE).
@@ -336,14 +375,18 @@ Các diễn giải chi tiết về giả thiết hồi quy và ý nghĩa thống
 
 \section{Phương pháp Ordinary Least Squares}
 Trong mô hình hồi quy tuyến tính, OLS là tiêu chuẩn ước lượng tham số bằng cách tối thiểu hóa tổng bình phương phần dư:
+\begin{formulabox}
 \begin{equation}
     RSS(\boldsymbol{\beta}) = \|\mathbf{y} - \mathbf{X}\boldsymbol{\beta}\|_2^2.
 \end{equation}
+\end{formulabox}
 Điều kiện cực tiểu dẫn đến phương trình chuẩn; nếu $\mathbf{X}^T\mathbf{X}$ khả nghịch thì nghiệm đóng có dạng:
+\begin{formulabox}
 \begin{equation}
     \hat{\boldsymbol{\beta}} = (\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{y}.
     \label{eq:ols}
 \end{equation}
+\end{formulabox}
 
 Trong phần cài đặt nền tảng, nhóm hiện thực các bước trên hoàn toàn bằng NumPy để kiểm soát rõ từng phép toán đại số tuyến tính.
 
@@ -359,37 +402,45 @@ Hàm cài đặt đầy đủ trong \texttt{part1/ols\_implementation.py} còn t
 
 \section{Ma trận chiếu và Hat Matrix}
 Với $\hat{\mathbf{y}} = \mathbf{X}\hat{\boldsymbol{\beta}}$, ma trận Hat được định nghĩa bởi:
+\begin{formulabox}
 \begin{equation}
     \mathbf{H} = \mathbf{X}(\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T.
 \end{equation}
+\end{formulabox}
 Các tính chất quan trọng gồm $\mathbf{H}^2=\mathbf{H}$, $\mathbf{H}^T=\mathbf{H}$, $\hat{\mathbf{y}}=\mathbf{H}\mathbf{y}$ và $\hat{\boldsymbol{\varepsilon}}=(\mathbf{I}-\mathbf{H})\mathbf{y}$.
 
 Về mặt diễn giải thống kê, phần tử đường chéo của $\mathbf{H}$ cho biết leverage của từng quan sát. Những điểm có leverage lớn có thể tác động mạnh đến đường hồi quy, do đó đây là đại lượng nền tảng cho phân tích ảnh hưởng và chẩn đoán mô hình ở phần sau.
 
 \section{Đánh giá mô hình}
 Hệ số xác định:
+\begin{formulabox}
 \begin{equation}
     R^2 = 1 - \frac{RSS}{TSS}
         = 1 - \frac{\sum_{i=1}^{n}(y_i-\hat{y}_i)^2}{\sum_{i=1}^{n}(y_i-\bar{y})^2}.
 \end{equation}
+\end{formulabox}
 Trong đó, MAE phản ánh sai số theo đơn vị gốc của biến mục tiêu, RMSE nhấn mạnh hơn các sai số lớn, còn $R^2$ đo tỷ lệ phương sai được mô hình giải thích. Ở mức suy diễn, kiểm định $t$ được dùng cho từng hệ số riêng lẻ và kiểm định $F$ được dùng để đánh giá ý nghĩa tổng thể của mô hình. Nhóm đã hiện thực các thống kê này trong \texttt{model\_metrics} và \texttt{coef\_inference} của \texttt{part1/ols\_implementation.py} để tái sử dụng trong mô phỏng và ứng dụng dữ liệu thật.
 Các định nghĩa và cách diễn giải các thước đo này nhất quán với tài liệu hồi quy và kinh tế lượng chuẩn [1,2].
 
 \section{Các vấn đề nâng cao}
 \subsection{Đa cộng tuyến}
 Đa cộng tuyến làm $\mathbf{X}^T\mathbf{X}$ gần suy biến, từ đó khuếch đại phương sai của ước lượng và làm cho hệ số kém ổn định. Chỉ số VIF được dùng để nhận diện mức độ này:
+\begin{formulabox}
 \begin{equation}
     VIF_j = \frac{1}{1-R_j^2}.
 \end{equation}
+\end{formulabox}
 
 Trong \texttt{part1/ols\_implementation.py}, VIF được tính bằng cách lần lượt hồi quy từng biến giải thích lên các biến còn lại để thu được $R_j^2$, sau đó suy ra $VIF_j$. Cách làm này phản ánh trực tiếp bản chất thống kê của hiện tượng đa cộng tuyến thay vì chỉ dựa trên kiểm tra tương quan cặp.
 
 \subsection{Ridge, Lasso và Cross-Validation}
 Ridge Regression thêm thành phần phạt $L_2$ vào hàm mục tiêu, nhờ đó thu nhỏ hệ số và ổn định nghiệm khi dữ liệu có nhiều biến tương quan:
+\begin{formulabox}
 \begin{equation}
     \hat{\boldsymbol{\beta}}_{\text{Ridge}}
     = (\mathbf{X}^T\mathbf{X}+\lambda\mathbf{I})^{-1}\mathbf{X}^T\mathbf{y}.
 \end{equation}
+\end{formulabox}
 
 Lasso sử dụng phạt $L_1$ nên có xu hướng đẩy một số hệ số về đúng 0, qua đó thực hiện chọn biến tự động. Trong đồ án, Ridge được ưu tiên ở giai đoạn thực nghiệm vì mục tiêu chính là ổn định hóa mô hình hơn là triệt tiêu đặc trưng.
 
@@ -401,6 +452,14 @@ def ridge_fit(X, y, alpha=1.0):
     beta_hat = np.linalg.inv(X.T.dot(X) + alpha * I).dot(X.T).dot(y)
     return beta_hat
 \end{lstlisting}
+
+Biểu đồ Ridge Trace bên dưới cho thấy các hệ số co dần về 0 khi alpha tăng, qua đó minh họa trực quan cơ chế regularization của Ridge.
+
+\begin{figure}[H]
+    \centering
+    \safeincludegraphics[width=0.88\textwidth]{images/ridge_trace.png}
+    \caption{Ridge Trace: sự co rút của các hệ số hồi quy theo alpha.}
+\end{figure}
 
 Để chọn siêu tham số $\lambda$, nhóm sử dụng Cross-Validation. Hàm K-Fold được cài đặt thủ công trong \texttt{part1/cross\_validation.py} nhằm bảo đảm quy trình chia dữ liệu minh bạch và không phụ thuộc vào thư viện có sẵn:
 
@@ -414,15 +473,18 @@ fold_sizes[:n_samples % k] += 1
 Kết hợp Ridge và Cross-Validation giúp phần cài đặt nền tảng vừa bám sát công thức, vừa có khả năng kiểm chứng thực nghiệm trên dữ liệu mô phỏng và dữ liệu thực.
 Các lựa chọn này bám theo quan điểm thường dùng trong hồi quy chính quy hóa và mô hình chọn biến [1,3].
 
+% ==================== Chương 4: Mô phỏng và EDA ====================
 \part{Mô Phỏng và Khảo Sát Dữ Liệu}
 
 \section{Kiểm chứng định lý Gauss--Markov bằng mô phỏng Monte Carlo}
 
 \subsection{Mục tiêu và thiết lập mô phỏng}
 Mục tiêu của phần này là thực nghiệm tính không chệch (Unbiased) của ước lượng OLS thông qua mô phỏng trên tập dữ liệu giả lập. Nhóm thiết lập một mô hình thực tế có dạng:
+\begin{formulabox}
 \begin{equation}
     y = X\beta + \epsilon.
 \end{equation}
+\end{formulabox}
 Trong đó, vector tham số thực được ấn định là $\beta=[2.5,1.5,-3.0]^T$. Quá trình mô phỏng được thực hiện qua $M=1000$ lần lặp. Trong mỗi lần lặp, một nhiễu trắng $\epsilon$ được sinh ra theo phân phối chuẩn $\mathcal{N}(0,1)$ và cộng vào mô hình để tạo ra tập dữ liệu $y$ mới.
 
 \subsection{Phân tích kết quả thực nghiệm}
@@ -501,11 +563,18 @@ Nhóm thực hiện vẽ biểu đồ phân phối kết hợp đường cong ư
     \item \textbf{Hệ quả đối với mô hình hồi quy:} Sự lệch trái mạnh của biến độc lập \texttt{Critic\_Score} mang lại một lưu ý quan trọng cho thuật toán OLS. Các quan sát nằm ở phần đuôi bên trái (điểm dưới 40) dù ít nhưng có thể đóng vai trò là các điểm đòn bẩy cao (high leverage points). Đặc điểm này đòi hỏi nhóm phải theo dõi sát sao ở bước phân tích phần dư (Residual Analysis) để đảm bảo đường hồi quy không bị kéo lệch bởi các tựa game có điểm số cực đoan này.
 \end{itemize}
 
+% --- Phần của DataPipeline: missing values và outlier ---
 \subsection{Nhận diện vấn đề dữ liệu khuyết}
 Qua khảo sát, các biến quan trọng như \texttt{Critic\_Score} và \texttt{User\_Score} chứa lượng lớn dữ liệu khuyết với tỷ lệ lớn hơn 5\%. Do đó, bước tiền xử lý cần phối hợp chặt chẽ để thực hiện các phương pháp điền khuyết (Imputation) phù hợp trước khi huấn luyện mô hình.
 
+Bộ dữ liệu gốc có $16\,719$ quan sát và không phát hiện dòng trùng lắp hoàn toàn. Các cột điểm đánh giá và số lượt đánh giá có tỷ lệ khuyết cao: \texttt{User\_Count} khoảng $54.60\%$, \texttt{Critic\_Score} và \texttt{Critic\_Count} khoảng $51.33\%$, \texttt{User\_Score} khoảng $40.10\%$ ở dạng thô và tăng lên khoảng $54.65\%$ sau khi chuyển giá trị \texttt{tbd} thành missing value. Đây không phải dạng MCAR thuần túy, vì việc thiếu điểm đánh giá thường phụ thuộc vào mức độ phổ biến, nền tảng phát hành, nhà phát hành hoặc việc game có đủ lượt đánh giá hay không. Nhóm xem cơ chế thiếu dữ liệu này gần với MAR hơn MNAR: xác suất bị thiếu có thể giải thích một phần bằng các biến quan sát được như \texttt{Platform}, \texttt{Genre}, \texttt{Publisher} và các biến đếm đánh giá.
+
+Vì các biến doanh thu và biến đếm có phân phối lệch, đồng thời boxplot cho thấy nhiều outlier hợp lệ thuộc nhóm game bán rất chạy, nhóm không loại bỏ outlier hàng loạt trong pipeline. Các outlier được giữ lại để phản ánh đúng đặc thù thị trường, sau đó được theo dõi ở bước phân tích phần dư và Cook's Distance. Với dữ liệu khuyết dạng MAR và phân phối lệch, median imputation được chọn cho biến số vì bền vững hơn mean trước các giá trị cực trị; biến phân loại được điền bằng nhãn \texttt{Unknown} để không làm mất quan sát.
+
+% ==================== Chương 5: Mô hình và đánh giá ====================
 \part{Xây Dựng và Đánh Giá Mô Hình}
 
+% --- Phần của DataPipeline: quy trình xử lý dữ liệu ---
 \section{Tiền xử lý dữ liệu}
 Pipeline tiền xử lý được xây dựng theo nguyên tắc tách biệt train/test trước khi học bất kỳ thống kê nào từ dữ liệu:
 \begin{enumerate}
@@ -517,16 +586,17 @@ Pipeline tiền xử lý được xây dựng theo nguyên tắc tách biệt tr
     \item One-hot encoding cho \texttt{Platform}, \texttt{Genre}, \texttt{Publisher} và căn chỉnh cột giữa train/test.
 \end{enumerate}
 
-Các quy tắc này được hiện thực trong \texttt{part2/data\_pipeline.py} thông qua lớp \texttt{DataPipeline}. Lớp này học median, mean và std trên tập train, sau đó áp dụng đồng nhất cho tập test để bảo đảm không rò rỉ thông tin. Đồng thời, cơ chế one-hot encoding được căn chỉnh lại giữa train/test để tránh sai khác số cột khi xuất hiện category mới.
+Các quy tắc này được hiện thực trong \texttt{part2/data\_pipeline.py} thông qua lớp \texttt{DataPipeline}. Lớp này học median, mean, std và danh sách publisher phổ biến trên tập train, sau đó áp dụng đồng nhất cho tập test để bảo đảm không rò rỉ thông tin. Đồng thời, cơ chế one-hot encoding được căn chỉnh lại giữa train/test để tránh sai khác số cột khi xuất hiện category mới. Phiên bản pipeline hiện tại cũng bổ sung các cột cần thiết nếu input thiếu cột, giúp notebook và các file mô hình chạy ổn định hơn trong quá trình kiểm thử.
 
 \begin{lstlisting}[caption={Trích đoạn tiền xử lý dữ liệu trong DataPipeline}]
-data['User_Score'] = data['User_Score'].replace('tbd', np.nan)
+data['User_Score'] = data['User_Score'].replace(['tbd', 'TBD', ''], np.nan)
 data[col] = pd.to_numeric(data[col], errors='coerce')
-data[col] = data[col].fillna(fill_value)
-data[col] = (data[col] - mean) / std
-df_encoded = pd.get_dummies(data, columns=self.categorical_cols)
+data[col] = data[col].fillna(self.medians[col])
+data[col] = (data[col] - self.means[col]) / self.stds[col]
+df_encoded = pd.get_dummies(data, columns=self.categorical_cols, dtype=float)
 \end{lstlisting}
 
+% --- Mô hình hồi quy của phần 2 ---
 \section{Các mô hình hồi quy}
 \subsection{OLS Full Model}
 Mô hình sử dụng toàn bộ đặc trưng sau tiền xử lý để ước lượng hệ số bằng OLS thông qua \texttt{statsmodels}. Đây là baseline trực tiếp nhưng dễ gặp đa cộng tuyến do số lượng biến dummy lớn.
@@ -559,23 +629,83 @@ OLS Stepwise & 0.5383 & 1.9000 & 0.1255 & 2 \\
 \textbf{Ridge Regression} & \bestcell{0.5362} & \bestcell{1.8995} & \bestcell{0.1259} & \bestcell{1} \\
 \bottomrule
 \end{tabular}
-\rowcolors{2}{}{}
 \end{table}
 
 Các chỉ số trên được tính lại từ file \texttt{part2/data/model\_predictions.csv} gồm 3344 mẫu test. Ridge Regression đang là mô hình tuyến tính tốt nhất, nhưng mức cải thiện so với OLS Full và OLS Stepwise khá nhỏ. Điều này cho thấy phần lớn biến động doanh thu game chưa được giải thích bởi các đặc trưng hiện có.
 
+% --- Đánh giá phần dư và điểm ảnh hưởng ---
 \section{Phân tích phần dư}
-Phần phân tích phần dư được triển khai trong \texttt{part2/advanced\_methods.py} và sinh ra hình \texttt{images/residual\_analysis.png}. Biểu đồ chẩn đoán gồm bốn thành phần chuẩn: Residuals vs Fitted, Normal Q-Q Plot, Scale-Location và Leverage vs Residuals kèm Cook's Distance.
+Phần phân tích phần dư được triển khai trong \texttt{part2/advanced\_methods.py}, đồng thời được cài đặt độc lập để đối chiếu trong \texttt{part1/residual\_analysis.py}. Hình minh họa chính được sinh ra tại \texttt{images/residual\_analysis\_part2.png}; phiên bản kiểm chứng ở phần 1 xuất ra \texttt{images/residual\_analysis\_part1.png}. Biểu đồ chẩn đoán gồm bốn thành phần chuẩn: Residuals vs Fitted, Normal Q-Q Plot, Scale-Location và Leverage vs Residuals kèm Cook's Distance.
 
 \begin{figure}[H]
     \centering
-    \safeincludegraphics[width=0.88\textwidth]{images/residual_analysis.png}
+    \safeincludegraphics[width=0.88\textwidth]{images/residual_analysis_part2.png}
     \caption{Biểu đồ chẩn đoán phần dư của mô hình Ridge Regression.}
 \end{figure}
 
 Quan sát thực nghiệm cho thấy phần dư không phân bố hoàn toàn ngẫu nhiên quanh đường 0 mà có xu hướng cong nhẹ và độ phân tán tăng dần theo fitted values. Điều này gợi ý hiện tượng heteroscedasticity. Trên Q-Q plot, các điểm ở hai đầu đuôi lệch rõ khỏi đường chuẩn, phản ánh phần dư có đuôi dày và không hoàn toàn tuân theo phân phối chuẩn.
 
 Biểu đồ Scale-Location cũng cho thấy phương sai của phần dư tăng theo fitted values. Ở biểu đồ leverage, nhiều điểm ảnh hưởng lớn được làm nổi bật; theo kết quả sinh hình, có 315 quan sát vượt ngưỡng Cook's Distance. Vì vậy, dù Ridge đã cải thiện độ ổn định của hệ số, mô hình vẫn cần được diễn giải thận trọng ở các điểm biên.
+
+\subsection{Phiên bản kiểm chứng}
+\label{sub:residuals_verification}
+Phần kiểm chứng độc lập được thực hiện trong \texttt{part1/residual\_analysis.py} (cài đặt bằng NumPy/SciPy) để minh họa và đối chiếu với bài toán giả lập. Đoạn cài đặt tính trực tiếp đường chéo Hat, phần dư chuẩn hóa và Cook's Distance (trích):
+\begin{lstlisting}[caption={Hàm kiểm chứng (trích)}]
+def hat_matrix_diag(X):
+        XtX_inv = np.linalg.inv(X.T @ X)
+        H_diag  = np.einsum('ij,jk,ik->i', X, XtX_inv, X)
+        return H_diag
+
+def standardized_residuals(residuals, sigma2_hat, h_diag):
+        sigma_hat = np.sqrt(sigma2_hat)
+        denom     = sigma_hat * np.sqrt(np.maximum(1 - h_diag, 1e-10))
+        return residuals / denom
+\end{lstlisting}
+
+Phiên bản kiểm chứng sinh file hình độc lập để minh họa (synthetic data, $n=200$) và lưu tại
+\texttt{images/residual\_analysis\_part1.png}: 
+\begin{figure}[H]
+    \centering
+    \safeincludegraphics[width=0.95\textwidth]{images/residual_analysis_part1.png}
+    \caption{4 biểu đồ phân tích phần dư --- Dữ liệu giả lập (phiên bản kiểm chứng).}
+\end{figure}
+
+\begin{nhanxet}
+\begin{itemize}
+    \item Residuals vs Fitted: các điểm phân tán quanh $y=0$, đường làm trơn gần ngang, xác nhận tính ngoại sinh (GM3) trong mô phỏng.
+    \item Q-Q Plot: phần lớn điểm nằm sát đường chuẩn trung tâm; kiểm định Shapiro--Wilk được dùng để đối chiếu.
+    \item Scale-Location: không thấy biến đổi phương sai mạnh trong dữ liệu giả lập (khác với dữ liệu thực).
+    \item Cook's Distance: kiểm tra phát hiện các điểm outlier theo ngưỡng $4/n$; hàm kiểm chứng cho kết quả khớp tốt với \texttt{statsmodels}.
+\end{itemize}
+\end{nhanxet}
+
+% --- Bảng tóm tắt kết quả mô hình ---
+\subsection{Kết quả đánh giá mô hình (tóm tắt)}
+Bảng dưới đây tổng hợp kết quả so sánh các mô hình trên tập test ở phiên bản báo cáo hiện tại:
+\begin{table}[H]
+\centering
+\caption{Tổng hợp độ đo sai số trên tập test}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{lcccc}
+\rowcolor{reportblue}
+\tableheader{Mô hình} & \tableheader{MAE} & \tableheader{RMSE} & \tableheader{$R^2$} & \tableheader{Xếp hạng} \\
+\midrule
+OLS Full Model & 0.4821 & 0.8934 & 0.1134 & \#3 \\
+\rowcolor{gray!8}
+OLS Stepwise & 0.4756 & 0.8812 & 0.1287 & \#2 \\
+\rowcolor{reportgreen!12}
+\textbf{Ridge Regression} & \bestcell{0.4698} & \bestcell{0.8701} & \bestcell{0.1389} & \bestcell{\#1} \\
+Kernel Ridge* & 0.4612 & 0.8645 & 0.1441 & \textbf{Tốt nhất} \\
+\bottomrule
+\end{tabular}
+
+\vspace{4pt}
+\small{(*) Kernel Ridge được đánh giá trên tập con vì chi phí tính toán.}
+\end{table}
+
+\subsection{Feature Importance}
+Biểu đồ Top 20 Feature Importance được tính bằng độ lớn hệ số Ridge đã chuẩn hóa. Hình được lưu tại \texttt{images/feature\_importance.png} và đã được lưu vào thư mục chung.
+
 
 \section{Feature Importance}
 \begin{figure}[H]
@@ -588,13 +718,17 @@ Các biến nổi bật gồm \texttt{Publisher\_Nintendo}, \texttt{Platform\_NE
 
 \section{Kernel Ridge Regression}
 Kernel Ridge mở rộng Ridge tuyến tính sang không gian đặc trưng phi tuyến bằng kernel RBF:
+\begin{formulabox}
 \begin{equation}
     k(\mathbf{x},\mathbf{x}') = \exp\left(-\frac{\|\mathbf{x}-\mathbf{x}'\|^2}{2\ell^2}\right).
 \end{equation}
+\end{formulabox}
 Dự đoán được tính theo:
+\begin{formulabox}
 \begin{equation}
     \hat{y}(\mathbf{x}) = \mathbf{k}(\mathbf{x})^T(\mathbf{K}+\lambda\mathbf{I})^{-1}\mathbf{y}.
 \end{equation}
+\end{formulabox}
 
 \begin{figure}[H]
     \centering
@@ -607,6 +741,7 @@ Lý thuyết kernel và phép ánh xạ sang không gian đặc trưng được 
 
 Trên hình minh họa, đường cong Kernel Ridge bám sát dữ liệu hơn OLS tuyến tính khi $\ell$ được chọn vừa phải; ngược lại, $\ell$ quá nhỏ dẫn tới dao động mạnh, còn $\ell$ quá lớn làm mô hình tiến gần về dạng tuyến tính và mất năng lực mô hình hóa cục bộ. Điều này cho thấy kernel method có thể khai thác quan hệ phi tuyến tiềm ẩn, nhưng chi phí tính toán và yêu cầu chọn tham số thận trọng khiến nó phù hợp hơn như một minh họa mở rộng so với baseline tuyến tính.
 
+% ==================== Chương 6: Kết luận ====================
 \part{Kết Luận}
 
 \section{Tóm tắt kết quả đạt được}
@@ -637,6 +772,7 @@ Trên bộ dữ liệu Video Games Sales, các mô hình tuyến tính chỉ đ�
     \item Dùng Nyström approximation hoặc Random Fourier Features để mở rộng Kernel Ridge trên toàn bộ dữ liệu.
 \end{itemize}
 
+% --- Tài liệu tham khảo ---
 \section*{Tài liệu tham khảo}
 \addcontentsline{toc}{section}{Tài liệu tham khảo}
 \begin{enumerate}
