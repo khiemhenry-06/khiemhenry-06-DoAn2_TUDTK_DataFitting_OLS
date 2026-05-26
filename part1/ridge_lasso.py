@@ -1,3 +1,5 @@
+# Trần Thanh Nam
+
 import numpy as np
 
 def ridge_fit(X, y, alpha=1.0):

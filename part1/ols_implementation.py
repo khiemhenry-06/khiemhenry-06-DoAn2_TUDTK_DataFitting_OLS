@@ -1,3 +1,5 @@
+# Nguyễn Công Nguyên
+
 """OLS implementation from scratch.
 
 Provides: ols_fit, hat_matrix, rss, tss, r2_score, vif

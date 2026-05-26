@@ -164,4 +164,11 @@ file_pdf/
 *.fdb_latexmk
 *.fls
 
+# File và thư mục không muốn đưa lên repo
+link_data.txt
+report/assets/
+report/docx/
+report/sources/
+report/*.pdf
+
 

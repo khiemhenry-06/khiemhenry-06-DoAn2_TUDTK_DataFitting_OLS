@@ -1,3 +1,5 @@
+# Trần Thanh Nam
+
 import numpy as np
 
 def kfold_cv_split(X, y, k=5, random_seed=None):

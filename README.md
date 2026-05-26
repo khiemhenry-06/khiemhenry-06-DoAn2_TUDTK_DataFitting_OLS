@@ -2,37 +2,35 @@
 
 > [!IMPORTANT]
 > ## 📊 BẢNG THEO DÕI TIẾN ĐỘ THỰC HIỆN ĐỒ ÁN 2 (CẬP NHẬT MỚI NHẤT)
-> Bảng này giúp nhóm trưởng và các thành viên dễ dàng kiểm soát các đầu việc đã hoàn thành và đốc thúc các thành viên còn lại nộp bài đúng hạn.
-> 
+> Bảng này giúp nhóm trưởng và các thành viên dễ dàng kiểm soát các đầu việc đã hoàn thành, phần còn thiếu và các file đang được đồng bộ vào notebook/báo cáo.
+>
 > * **Tổng số thành viên:** 5 thành viên (Khiêm, Nguyên, Minh, Nam, Kiên)
-> * **Số nhiệm vụ đã hoàn thành:** 4/7 nhiệm vụ chính (~57%)
-> * **Trạng thái nhánh dự án:** Đã đồng bộ hóa đồng nhất dữ liệu EDA (Nam) -> Pipeline (Khiêm) -> Mô hình (Minh) vào file Jupyter Notebook chính thức (`part2_notebook.ipynb`).
-> 
+> * **Trạng thái tổng quan:** Phần 2 đã có đủ luồng EDA -> Pipeline -> Mô hình -> Đánh giá. Phần 1 còn thiếu file `residual_analysis.py`; phần Ridge/Lasso hiện mới có Ridge và K-Fold, chưa có Lasso/ridge trace đầy đủ.
+> * **Báo cáo:** `report/report.tex` và `report/report.pdf` đã có. Những phần chưa hoàn thiện được đánh dấu TODO trong báo cáo.
+>
 > ### 1. PHẦN 1: BÁO CÁO LÝ THUYẾT & XÂY DỰNG OLS TỪ ĐẦU (FROM SCRATCH)
-> 
+>
 > | Thành viên | Nhiệm vụ đảm nhận | File Code liên quan | Trạng thái | Ghi chú & Đánh giá |
 > | :--- | :--- | :--- | :---: | :--- |
-> | **Nguyên** | Xây dựng thuật toán hồi quy OLS từ đầu bằng toán ma trận NumPy | `part1/ols_implementation.py` | 🟢 **Hoàn thành** | Chứa đầy đủ tính toán hệ số $\hat{\beta}$, các chỉ số thống kê $R^2$, Adj-$R^2$, kiểm định $t$, kiểm định $F$, và kiểm tra đa cộng tuyến. Code chạy rất chuẩn xác! |
-> | **Nam** | Viết thuật toán và phân tích lý thuyết về Ridge, Lasso, và Cross Validation | `part1/ridge_lasso.py`<br>`part1/cross_validation.py` | 🟡 **Chưa làm** *(Đang thực hiện)* | Hiện tại các file code chỉ chứa các dòng comment trống phân chia nhiệm vụ. |
-> | **Kiên** | Xây dựng lý thuyết và vẽ biểu đồ phân tích phần dư (Residual Analysis) | `part1/residual_analysis.py` | 🟡 **Chưa làm** *(Đang thực hiện)* | Hiện tại file code chỉ chứa các dòng comment trống. |
-> 
+> | **Nguyên** | Xây dựng thuật toán hồi quy OLS từ đầu bằng toán ma trận NumPy | `part1/ols_implementation.py` | 🟢 **Hoàn thành** | Đã có `ols_fit`, ma trận Hat, RSS/TSS/R², Adj-R², kiểm định F, kiểm định t/p-value, khoảng tin cậy và VIF. Notebook Phần 1 đã minh họa các hàm chính. |
+> | **Nam** | Ridge, Lasso, Cross Validation và Monte Carlo | `part1/ridge_lasso.py`<br>`part1/cross_validation.py`<br>`part1/part1_notebook.ipynb` | 🟡 **Hoàn thành một phần** | Đã có `ridge_fit`, `kfold_cv_split`, phần Monte Carlo và minh họa trong notebook. Còn thiếu Lasso Regression và ridge trace đầy đủ nếu bám sát toàn bộ yêu cầu đề. |
+> | **Kiên** | Xây dựng lý thuyết và vẽ biểu đồ phân tích phần dư (Residual Analysis) | `part1/residual_analysis.py` | 🔴 **Chưa làm** | File hiện chỉ có header tên người làm. Báo cáo đã để TODO để bổ sung sau. |
+>
 > ### 2. PHẦN 2: ỨNG DỤNG HỒI QUY TRÊN DỮ LIỆU THỰC TẾ (VIDEO GAMES SALES)
-> 
+>
 > | Thành viên | Nhiệm vụ đảm nhận | File Code liên quan | Trạng thái | Ghi chú & Đánh giá |
 > | :--- | :--- | :--- | :---: | :--- |
-> | **Nam** | Phân tích dữ liệu khám phá (EDA), vẽ các biểu đồ tương quan, Boxplot, Scatterplot | `part2/part2_eda_vgsales.py`<br>*(Đã đồng bộ sang Cell 3 của Notebook)* | 🟢 **Hoàn thành** | Đã hoàn thành 3 biểu đồ chính (Heatmap Pearson, Boxplot phân phối loại bỏ outliers $>20M$, Scatterplot Critic Score). |
-> | **Khiêm** | Thiết kế Pipeline tiền xử lý dữ liệu tùy biến (`DataPipeline` kế thừa Scikit-Learn) | `part2/data_pipeline.py`<br>*(Đã đồng bộ sang Cell 5 của Notebook)* | 🟢 **Hoàn thành** | Pipeline xử lý cực kỳ chuyên nghiệp (imputer dữ liệu khuyết, mã hóa OneHot, scale Standard). Ngăn chặn rò rỉ dữ liệu chuẩn xác. |
-> | **Minh** | Huấn luyện 3 mô hình hồi quy (OLS Full, Stepwise Backward, Ridge CV) và xuất dự đoán | `part2/model_comparison.py`<br>*(Đã đồng bộ sang Cell 8, 10, 12, 14 Notebook)* | 🟢 **Hoàn thành** | Đã huấn luyện thành công cả 3 mô hình, tìm ra $\alpha$ tối ưu bằng Cross-Validation, và xuất thành công các file dự đoán ra thư mục `data/`. |
-> | **Kiên** | Đánh giá sai số (RMSE, MAE), phân tích phần dư thực tế trên dữ liệu dự báo | `part2/advanced_methods.py`<br>*(Đã đồng bộ sang Cell 15, 16 Notebook)* | 🟡 **Chưa làm** *(Đang thực hiện)* | Hiện tại file code chỉ chứa các dòng comment trống chờ kết quả dự báo từ nhóm. |
-> 
+> | **Nam** | Phân tích dữ liệu khám phá (EDA), vẽ Heatmap, Boxplot, Scatterplot, Histogram | `part2/part2_notebook.ipynb`<br>`report/images_nam/` | 🟢 **Hoàn thành** | Code EDA đã được đưa trực tiếp vào notebook và lưu ảnh sang `report/images_nam`. |
+> | **Khiêm** | Thiết kế Pipeline tiền xử lý dữ liệu tùy biến (`DataPipeline`) | `part2/data_pipeline.py`<br>`part2/part2_notebook.ipynb` | 🟢 **Hoàn thành** | Pipeline xử lý `tbd`, missing values, gom nhóm Publisher, one-hot encoding, chuẩn hóa và căn chỉnh cột train/test để tránh rò rỉ dữ liệu. |
+> | **Minh** | Huấn luyện 3 mô hình hồi quy (OLS Full, Stepwise Backward, Ridge CV) và xuất dự đoán | `part2/model_comparison.py`<br>`part2/part2_notebook.ipynb` | 🟢 **Hoàn thành** | Đã huấn luyện 3 mô hình, chọn alpha bằng Cross-Validation và xuất `selected_features.csv`, `model_predictions.csv`. |
+> | **Kiên** | Đánh giá sai số, phân tích phần dư, feature importance, Kernel Ridge Regression | `part2/advanced_methods.py`<br>`part2/part2_notebook.ipynb`<br>`report/images_kien/` | 🟢 **Hoàn thành** | Đã có MAE/RMSE/R², residual plots, feature importance và Kernel Ridge Regression; ảnh được lưu sang `report/images_kien`. |
+>
 > ---
-> 
+>
 > ### 📈 KẾ HOẠCH HÀNH ĐỘNG TIẾP THEO (ACTION ITEMS)
-> - [ ] **Trần Thanh Nam:** Hoàn thiện lý thuyết & code phần Ridge/Lasso và Cross Validation ở Phần 1 (`part1/ridge_lasso.py`, `part1/cross_validation.py`).
-> - [ ] **Đỗ Trung Kiên:** 
->     1. Hoàn thiện phần lý thuyết Residual Analysis ở Phần 1 (`part1/residual_analysis.py`).
->     2. Sử dụng file kết quả dự đoán `data/model_predictions.csv` đã có sẵn để viết tiếp code đánh giá sai số & vẽ đồ thị phân phối phần dư ở cuối Notebook (`part2_notebook.ipynb`).
-> - [ ] **Tiến hành biên soạn báo cáo LaTeX:** Sau khi các thành viên nộp đủ code, nhóm trưởng Khiêm tiến hành ráp kết quả vào file báo cáo LaTeX trong thư mục `report/report.tex`.
+> - [ ] **Đỗ Trung Kiên:** Hoàn thiện `part1/residual_analysis.py` và bổ sung hình/nhận xét tương ứng vào báo cáo.
+> - [ ] **Trần Thanh Nam:** Bổ sung Lasso Regression và ridge trace trong `part1/ridge_lasso.py` nếu nhóm muốn đáp ứng đầy đủ hơn phần regularization của đề.
+> - [ ] **Nhóm trưởng:** Trước khi nộp, rà soát và có thể xóa các thư mục `__pycache__/`; cân nhắc bỏ `link_data.txt` nếu không sử dụng.
 
 ---
 

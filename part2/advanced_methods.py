@@ -1,6 +1,8 @@
+# Đỗ Trung Kiên
+
 """
 =======================================================================
-PHẦN CỦA KIÊN — Đánh giá Mô hình & Kỹ thuật Nâng cao
+Đánh giá Mô hình & Kỹ thuật Nâng cao
 =======================================================================
 Nhiệm vụ:
   1. Tính MAE, RMSE, R² so sánh 3 mô hình
@@ -16,6 +18,8 @@ Cách dùng:
 
 import numpy as np
 import pandas as pd
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import scipy.stats as stats
@@ -38,8 +42,14 @@ from statsmodels.stats.outliers_influence import OLSInfluence
 BASE_DIR     = os.path.dirname(os.path.abspath(__file__))
 DATA_CSV     = os.path.join(BASE_DIR, "data", "video_games_sales.csv")
 PIPELINE_DIR = BASE_DIR
-IMAGE_DIR    = os.path.join(os.path.dirname(BASE_DIR), "report", "images_Kien_Phan5")
+IMAGE_DIR    = os.path.join(os.path.dirname(BASE_DIR), "report", "images_kien")
 os.makedirs(IMAGE_DIR, exist_ok=True)
+
+def save_report_figure(filename, **kwargs):
+    output_path = os.path.join(IMAGE_DIR, filename)
+    if os.path.exists(output_path):
+        os.remove(output_path)
+    plt.savefig(output_path, **kwargs)
 
 sys.path.insert(0, PIPELINE_DIR)
 from data_pipeline import DataPipeline
@@ -218,10 +228,10 @@ ax4.set(xlabel="Leverage", ylabel="Std Residuals",
         title="4. Leverage vs Residuals\n→ Tìm điểm ảnh hưởng lớn")
 ax4.legend(fontsize=8)
 
-plt.savefig(os.path.join(IMAGE_DIR, 'residual_analysis.png'), dpi=150,
-            bbox_inches='tight', facecolor='white')
-plt.show()
+save_report_figure('residual_analysis.png', dpi=150,
+                   bbox_inches='tight', facecolor='white')
 print("  ✓ Đã lưu: residual_analysis.png")
+plt.close(fig)
 
 _, shapiro_p = stats.shapiro(train_std_resid[:200])
 print(f"  Shapiro-Wilk p = {shapiro_p:.4f} | Outliers (Cook's D > {thresh:.4f}): {mask.sum()}")
@@ -250,10 +260,10 @@ ax.set(xlabel="Độ lớn hệ số Ridge chuẩn hóa |β|",
        title="Top 20 Feature Importance — Ridge Regression\n(dùng Ridge coef để tránh inflate do multicollinearity)")
 ax.spines[['top', 'right']].set_visible(False)
 plt.tight_layout()
-plt.savefig(os.path.join(IMAGE_DIR, 'feature_importance.png'), dpi=150,
-            bbox_inches='tight', facecolor='white')
-plt.show()
+save_report_figure('feature_importance.png', dpi=150,
+                   bbox_inches='tight', facecolor='white')
 print("  ✓ Đã lưu: feature_importance.png")
+plt.close(fig2)
 
 print("\n  Top 10 features quan trọng nhất:")
 fi_df = pd.DataFrame({
@@ -385,10 +395,10 @@ axes[1].legend(fontsize=8)
 axes[1].spines[['top', 'right']].set_visible(False)
 
 plt.tight_layout()
-plt.savefig(os.path.join(IMAGE_DIR, 'kernel_regression_comparison.png'), dpi=150,
-            bbox_inches='tight', facecolor='white')
-plt.show()
+save_report_figure('kernel_regression_comparison.png', dpi=150,
+                   bbox_inches='tight', facecolor='white')
 print("  ✓ Đã lưu: kernel_regression_comparison.png")
+plt.close(fig3)
 
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -410,7 +420,7 @@ print(summary.to_string(index=False))
 best_overall = summary.loc[summary['R2'].idxmax(), 'Model']
 print(f"\n  → Mô hình tốt nhất theo R²: {best_overall}")
 print(f"  → Residual Analysis đã dùng: {best_name}")
-print(f"\n  Files đã tạo (report/images_Kien_Phan5/):")
+print(f"\n  Files đã tạo (report/images_kien/):")
 print("    residual_analysis.png")
 print("    feature_importance.png")
 print("    kernel_regression_comparison.png")
