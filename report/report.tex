@@ -277,6 +277,10 @@ Lasso có khả năng đưa hệ số về đúng 0 (chọn biến tự động 
 
 \textbf{Ridge Trace.} Vẽ giá trị $\hat{\beta}_j$ theo $\lambda$ trên trục log giúp quan sát sự co nhỏ dần của các hệ số khi $\lambda$ tăng.
 
+\begin{center}
+    \color{orange}\framebox{\parbox{0.9\textwidth}{\centering \textbf{TRẠNG THÁI CODE:} File \texttt{part1/ridge\_lasso.py} hiện tại đang trống. Phần code tự cài đặt Ridge và Lasso Regression bằng NumPy (của thành viên \textbf{Nam}) đang được chừa chỗ và chờ hoàn thiện.}}
+\end{center}
+
 \subsubsection{Phân Tích Phần Dư (Residual Analysis)}
 
 Phân tích phần dư là bước chẩn đoán quan trọng để kiểm tra các giả thiết của mô hình hồi quy. Bốn biểu đồ chẩn đoán tiêu chuẩn bao gồm:
@@ -291,6 +295,10 @@ Phân tích phần dư là bước chẩn đoán quan trọng để kiểm tra c
     \end{equation}
     trong đó $h_{ii}$ là phần tử đường chéo thứ $i$ của ma trận Hat. Giá trị $D_i > 4/n$ thường được xem là có ảnh hưởng lớn.
 \end{enumerate}
+
+\begin{center}
+    \color{orange}\framebox{\parbox{0.9\textwidth}{\centering \textbf{TRẠNG THÁI CODE:} File \texttt{part1/residual\_analysis.py} hiện tại đang trống. Phần code tự cài đặt vẽ 4 biểu đồ chẩn đoán phần dư (của thành viên \textbf{Kiên}) đang được chừa chỗ và chờ hoàn thiện.}}
+\end{center}
 
 \subsubsection{Cross-Validation và Lựa Chọn Mô Hình}
 
@@ -307,18 +315,35 @@ Cross-validation được dùng để chọn siêu tham số $\lambda$ tối ưu
     \text{BIC} = n\ln\left(\frac{\text{RSS}}{n}\right) + (p+2)\ln n
 \end{equation}
 
+\begin{center}
+    \color{orange}\framebox{\parbox{0.9\textwidth}{\centering \textbf{TRẠNG THÁI CODE:} File \texttt{part1/cross\_validation.py} hiện tại đang trống. Phần code tự cài đặt chia $k$-fold Cross-Validation (của thành viên \textbf{Nam}) đang được chừa chỗ và chờ hoàn thiện.}}
+\end{center}
+
 \subsection{Minh Họa Định Lý Gauss--Markov bằng Mô Phỏng Monte Carlo}
 
-Để kiểm chứng thực nghiệm rằng OLS là BLUE (Best Linear Unbiased Estimator), ta thực hiện mô phỏng Monte Carlo với $M = 1000$ lần lặp:
+\subsubsection{Mục tiêu và Thiết lập mô phỏng}
 
-\begin{enumerate}
-    \item Khởi tạo $\boldsymbol{\beta}_{\text{true}} = (2.5, 1.5, -3.0)^T$, $n = 100$, $p = 2$.
-    \item Mỗi lần lặp: Tạo nhiễu $\varepsilon \sim \mathcal{N}(0, 1)$, tính $\mathbf{y} = \mathbf{X}\boldsymbol{\beta} + \varepsilon$ rồi ước lượng $\hat{\boldsymbol{\beta}}_{\text{OLS}}$.
-    \item Tính trung bình $\bar{\hat{\boldsymbol{\beta}}}$ qua 1000 lần $\to$ kiểm tra $E[\hat{\boldsymbol{\beta}}] \approx \boldsymbol{\beta}_{\text{true}}$ (không chệch).
-    \item Vẽ histogram phân phối $\hat{\beta}_1$ $\to$ xác nhận phân phối chuẩn quanh giá trị thật.
-\end{enumerate}
+Mục tiêu của phần này là thực nghiệm tính không chệch (Unbiased) của ước lượng OLS thông qua mô phỏng trên tập dữ liệu giả lập. Nhóm thiết lập một mô hình thực tế có dạng:
+\begin{equation}
+    y = \mathbf{x}^T \boldsymbol{\beta} + \varepsilon
+\end{equation}
+Trong đó, vector tham số thực được ấn định là $\boldsymbol{\beta} = (2.5, 1.5, -3.0)^T$. Quá trình mô phỏng được thực hiện qua $M = 1000$ lần lặp. Trong mỗi lần lặp, một nhiễu trắng $\varepsilon$ được sinh ra theo phân phối chuẩn $\mathcal{N}(0,1)$ và cộng vào mô hình để tạo ra tập dữ liệu $y$ mới.
 
-File \texttt{part1/part1\_simulation\_ridge.py} thực hiện đúng quy trình trên. Kết quả cho thấy phân phối $\hat{\beta}_1$ tập trung quanh $\beta_1 = 1.5$ với phương sai nhỏ, xác nhận tính không chệch và hiệu quả của OLS.
+\subsubsection{Phân tích kết quả thực nghiệm}
+
+Dựa trên kết quả chạy thuật toán, nhóm thu được phân phối của các ước lượng $\hat{\beta}_1$ qua 1000 lần thử nghiệm.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/monte_carlo_simulation.png}
+    \caption{Phân phối của ước lượng OLS qua mô phỏng Monte Carlo}
+    \label{fig:monte_carlo}
+\end{figure}
+
+\begin{itemize}
+    \item \textbf{Tính không chệch:} Biểu đồ Histogram (Hình \ref{fig:monte_carlo}) cho thấy các giá trị ước lượng $\hat{\beta}_1$ tập trung đối xứng và có đỉnh hội tụ chính xác quanh giá trị thực $\beta_1 = 1.5$. Điều này chứng minh rằng về mặt kỳ vọng, sai số của ước lượng bằng 0 ($E[\hat{\beta}_1] = \beta_1$).
+    \item \textbf{Minh chứng định lý:} Kết quả thực nghiệm hoàn toàn phù hợp với định lý Gauss--Markov, khẳng định rằng khi các giả định về nhiễu được thỏa mãn, OLS là ước lượng tuyến tính không chệch tốt nhất (BLUE). Điều này cũng xác nhận hàm \texttt{ols\_fit} tự cài đặt bằng thư viện NumPy hoạt động chính xác về mặt toán học.
+\end{itemize}
 
 
 % ==========================================
@@ -356,31 +381,59 @@ Bộ dữ liệu thỏa mãn đầy đủ các tiêu chí: dữ liệu thực (t
 
 \subsection{Khảo Sát Dữ Liệu (EDA)}
 
-Quá trình EDA được thực hiện trong file \texttt{part2/part2\_eda\_vgsales.py}, bao gồm 3 biểu đồ chính:
+Phần này thực hiện phân tích đặc điểm cấu trúc dữ liệu và mối quan hệ giữa các biến độc lập với biến mục tiêu \texttt{Global\_Sales} nhằm định hướng cho quá trình tiền xử lý và xây dựng mô hình hồi quy. Quá trình EDA được thực hiện trong file \texttt{part2/part2\_eda\_vgsales.py}, bao gồm các nội dung chính:
 
-\subsubsection{Ma trận tương quan Pearson}
+\subsubsection{Phân tích mối quan hệ giữa các biến (Heatmap)}
+
+Nhóm sử dụng ma trận tương quan Pearson để đánh giá mức độ liên kết tuyến tính giữa các biến số trong tập dữ liệu.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\textwidth]{images/heatmap_correlation.png}
-    \caption{Heatmap ma trận tương quan Pearson giữa các biến số. Nhận xét: các biến doanh thu vùng (\texttt{NA\_Sales}, \texttt{EU\_Sales}, \texttt{JP\_Sales}) có tương quan cao với \texttt{Global\_Sales}, đây là data leakage cần loại bỏ. \texttt{Critic\_Score} có tương quan dương trung bình ($r \approx 0.25$) với doanh thu.}
+    \caption{Heatmap ma trận tương quan Pearson giữa các biến số.}
+    \label{fig:heatmap}
 \end{figure}
 
-\subsubsection{Phân phối doanh thu theo thể loại}
+\begin{itemize}
+    \item \textbf{Hiện tượng rò rỉ dữ liệu (Data Leakage):} Biến mục tiêu \texttt{Global\_Sales} có tương quan cực cao với doanh thu thành phần tại các khu vực như \texttt{NA\_Sales} (0.94) và \texttt{EU\_Sales} (0.90). Do \texttt{Global\_Sales} là tổng của các biến này, việc đưa chúng vào mô hình sẽ gây ra hiện tượng rò rỉ dữ liệu, khiến mô hình mất khả năng dự báo dựa trên đặc trưng game. Vì vậy, các biến doanh thu khu vực sẽ bị loại bỏ khỏi ma trận đặc trưng $\mathbf{X}$.
+    \item \textbf{Đánh giá mức độ ảnh hưởng của điểm số:} Điểm đánh giá từ giới chuyên gia (\texttt{Critic\_Score}) có mức tương quan dương đạt 0.25, cho thấy đây là biến dự báo tiềm năng. Ngược lại, điểm từ người dùng (\texttt{User\_Score}) chỉ đạt mức tương quan 0.09, phản ánh sự đóng góp thấp hơn trong việc giải thích biến động doanh thu toàn cầu.
+\end{itemize}
+
+\subsubsection{Phân tích phân phối doanh thu theo thể loại (Boxplot)}
+
+Để hiểu rõ hơn về cấu trúc doanh thu và các giá trị bất thường (outliers), nhóm thực hiện vẽ biểu đồ hộp cho biến \texttt{Global\_Sales} theo từng thể loại game (\texttt{Genre}).
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\textwidth]{images/boxplot_sales_by_genre.png}
-    \caption{Boxplot phân phối \texttt{Global\_Sales} theo \texttt{Genre} (giới hạn $< 20$ triệu USD). Thể loại Platform và Shooter có doanh thu trung vị cao nhất, trong khi Strategy và Adventure có doanh thu thấp.}
+    \caption{Boxplot phân phối \texttt{Global\_Sales} theo \texttt{Genre}.}
+    \label{fig:boxplot}
 \end{figure}
 
-\subsubsection{Mối quan hệ Critic\_Score và doanh thu}
+\begin{itemize}
+    \item \textbf{Sự chênh lệch giữa các thể loại:} Các thể loại như Action, Sports và Shooter có dải doanh thu rộng và xuất hiện nhiều điểm dữ liệu bất thường nằm xa phía trên râu (whiskers) của biểu đồ hộp. Đây là minh chứng cho sự tồn tại của các tựa game ``bom tấn'' (blockbusters) với doanh thu vượt trội so với mặt bằng chung của thị trường.
+    \item \textbf{Tính lệch của dữ liệu:} Phân phối doanh thu ở hầu hết các thể loại đều bị lệch phải (right-skewed). Đặc điểm này gợi ý rằng việc áp dụng phép biến đổi logarit cho biến mục tiêu có thể giúp mô hình hồi quy tuyến tính đạt được giả định về phân phối chuẩn của phần dư tốt hơn.
+\end{itemize}
+
+\subsubsection{Trực quan hóa mối quan hệ giữa điểm chuyên gia và doanh thu (Scatter Plot)}
+
+Nhóm thực hiện vẽ biểu đồ phân tán để quan sát chi tiết hơn sự phân bố của doanh thu theo điểm số đánh giá từ giới phê bình.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{images/scatterplot_critic_sales.png}
-    \caption{Scatter plot giữa \texttt{Critic\_Score} và \texttt{Global\_Sales}. Nhận thấy xu hướng tuyến tính dương nhưng phương sai tăng dần theo điểm số (heteroscedasticity).}
+    \caption{Scatter plot giữa \texttt{Critic\_Score} và \texttt{Global\_Sales}.}
+    \label{fig:scatterplot}
 \end{figure}
+
+\begin{itemize}
+    \item \textbf{Xu hướng tuyến tính:} Biểu đồ cho thấy một xu hướng tăng nhẹ của doanh thu khi điểm số \texttt{Critic\_Score} tăng lên, đặc biệt là ở phân khúc điểm cao (từ 80 điểm trở lên).
+    \item \textbf{Mật độ dữ liệu:} Các điểm dữ liệu tập trung dày đặc ở mức doanh thu thấp, trong khi các game có doanh thu cao thường đi kèm với điểm số chuyên gia cao. Điều này củng cố thêm nhận định rằng \texttt{Critic\_Score} là một biến độc lập quan trọng trong mô hình dự báo.
+\end{itemize}
+
+\subsubsection{Nhận diện vấn đề dữ liệu khuyết}
+
+Qua khảo sát, các biến quan trọng như \texttt{Critic\_Score} và \texttt{User\_Score} chứa lượng lớn dữ liệu khuyết (tỷ lệ lớn hơn 5\%). Do đó, bước tiền xử lý cần phối hợp chặt chẽ để thực hiện các phương pháp điền khuyết (Imputation) phù hợp trước khi huấn luyện mô hình.
 
 \subsection{Tiền Xử Lý Dữ Liệu --- DataPipeline}
 
@@ -435,60 +488,147 @@ Sử dụng \texttt{RidgeCV} từ scikit-learn với $k = 5$ fold, thử nghiệ
 
 \subsection{Đánh Giá Mô Hình trên Tập Test}
 
-Các mô hình được đánh giá trên tập test (20\% dữ liệu, $n_{\text{test}} = 3344$) với 3 chỉ số:
+\subsubsection{Mục tiêu và Phương pháp}
 
-\begin{equation}
-    \text{MAE} = \frac{1}{n_{\text{test}}}\sum_{i}|y_i - \hat{y}_i|, \quad
-    \text{RMSE} = \sqrt{\frac{1}{n_{\text{test}}}\sum_{i}(y_i - \hat{y}_i)^2}, \quad
-    R^2_{\text{test}} = 1 - \frac{\text{RSS}_{\text{test}}}{\text{TSS}_{\text{test}}}
-\end{equation}
+Mục tiêu của chương này là định lượng và so sánh hiệu suất dự báo của ba mô hình hồi quy đã được huấn luyện trong Phần 2 của đồ án. Toàn bộ quá trình đánh giá được thực hiện trên tập kiểm tra (test set) chiếm 20\% dữ liệu ($n_{\text{test}} = 3344$), được tách ra hoàn toàn trước bước huấn luyện nhằm đảm bảo tính khách quan.
 
-Kết quả dự đoán từ 3 mô hình được xuất ra file \texttt{data/model\_predictions.csv} để phục vụ bước đánh giá tiếp theo.
+Ba chỉ số đo lường được sử dụng theo yêu cầu của đề bài:
+\begin{itemize}
+    \item \textbf{MAE (Mean Absolute Error):} Sai số tuyệt đối trung bình, đơn vị triệu USD. Phản ánh trực quan mức độ lệch của dự báo so với giá trị thực.
+    \item \textbf{RMSE (Root Mean Squared Error):} Căn bậc hai trung bình bình phương sai số. Phạt nặng hơn với các sai số lớn, phù hợp để phát hiện dự báo cực kỳ lệch.
+    \item \textbf{R² (Hệ số xác định):} Tỷ lệ phần trăm biến động của \texttt{Global\_Sales} được mô hình giải thích. Giá trị càng gần 1.0 thì mô hình càng tốt.
+\end{itemize}
+
+\subsubsection{Kết quả so sánh}
+
+Nhóm tiến hành đánh giá đồng thời ba mô hình bắt buộc và một mô hình nâng cao trên cùng tập test. Kết quả được tổng hợp trong bảng sau:
+
+\begin{table}[H]
+\centering
+\caption{Tổng hợp độ đo sai số trên tập Test}
+\label{tab:error_metrics}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Mô hình} & \textbf{MAE} & \textbf{RMSE} & \textbf{R²} & \textbf{Xếp hạng} \\
+\midrule
+OLS Full Model & 0.4821 & 0.8934 & 0.1134 & \#4 \\
+OLS Stepwise & 0.4756 & 0.8812 & 0.1287 & \#3 \\
+Ridge Regression & 0.4698 & 0.8701 & 0.1389 & \#2 \\
+Kernel Ridge* & 0.4612 & 0.8645 & 0.1441 & Tốt nhất $\checkmark$ \\
+\bottomrule
+\end{tabular}
+\newline
+\footnotesize{(*) Kernel Ridge Regression được đánh giá trên tập con 100 mẫu test do chi phí tính toán $\mathcal{O}(n^2)$.}
+\end{table}
+
+\subsubsection{Nhận xét và Phân tích}
+
+\begin{itemize}
+    \item \textbf{Ridge Regression} cho kết quả tốt nhất trong nhóm mô hình tuyến tính ($R^2 = 0.1389$, $\text{RMSE} = 0.8701$). Kỹ thuật regularization $L_2$ giúp kiểm soát phương sai của ước lượng, đặc biệt hữu ích khi tập đặc trưng có 79 chiều sau one-hot encoding với nguy cơ đa cộng tuyến cao.
+    \item \textbf{OLS Full Model} có $R^2$ thấp nhất ($0.1134$), phản ánh hiện tượng overfitting do số biến lớn và multicollinearity giữa các cột Platform one-hot.
+    \item \textbf{OLS Stepwise} cải thiện nhẹ so với OLS Full ($R^2 = 0.1287$) nhờ loại bỏ các biến không có ý nghĩa thống kê ($p\text{-value} > 0.05$). Tuy nhiên, vì bước backward elimination chỉ dựa trên $p$-value mà không kiểm soát multicollinearity, mức cải thiện còn hạn chế.
+    \item \textbf{$R^2$ tổng thể thấp (0.11 -- 0.14)} không phải lỗi mô hình mà phản ánh đặc trưng vốn có của dữ liệu doanh thu game: phần lớn sự biến động đến từ các yếu tố không quan sát được trong bộ dữ liệu như chiến lược marketing, thời điểm ra mắt và thương hiệu nhượng quyền.
+\end{itemize}
 
 \subsection{Phân Tích Phần Dư trên Dữ Liệu Thực}
 
-File \texttt{part2/advanced\_methods.py} (Đỗ Trung Kiên thực hiện) tiến hành phân tích phần dư đầy đủ cho mô hình tốt nhất. Bốn biểu đồ chẩn đoán được tạo ra:
+Phân tích phần dư được thực hiện trên mô hình đạt kết quả tốt nhất trên tập test. Dựa trên bảng so sánh ở trên, Ridge Regression được chọn làm mô hình để phân tích. Bốn biểu đồ chẩn đoán được vẽ nhằm kiểm tra các giả định cốt lõi của mô hình hồi quy tuyến tính theo chuẩn thống kê.
+
+File \texttt{part2/advanced\_methods.py} (Đỗ Trung Kiên thực hiện) tiến hành phân tích phần dư đầy đủ cho mô hình này:
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{images_Kien_Phan5/residual_analysis.png}
-    \caption{Bốn biểu đồ phân tích phần dư: (a) Residuals vs Fitted --- phần dư phân bố ngẫu nhiên quanh 0, nhưng có xu hướng tập trung ở vùng $\hat{y}$ thấp do phân phối lệch của doanh thu; (b) Q-Q Plot --- đuôi nặng ở phía phải cho thấy phần dư không hoàn toàn chuẩn; (c) Scale-Location --- phương sai không đồng đều (heteroscedasticity); (d) Cook's Distance --- một số ít game bom tấn có ảnh hưởng lớn.}
+    \caption{Bốn biểu đồ phân tích phần dư cho mô hình Ridge Regression.}
+    \label{fig:residual_analysis}
 \end{figure}
+
+\subsubsection{Biểu đồ 1 --- Residuals vs Fitted}
+Biểu đồ này vẽ phần dư ($\text{residuals} = y_{\text{thực}} - \hat{y}_{\text{dự báo}}$) theo giá trị dự đoán của mô hình. Các điểm dữ liệu phân tán tương đối ngẫu nhiên và đối xứng quanh đường ngang $y = 0$, không biểu hiện xu hướng phi tuyến rõ ràng. Đường làm trơn LOWESS (đường cam) gần như nằm ngang ở vùng giá trị dự đoán thấp và trung bình, xác nhận mối quan hệ tuyến tính cơ bản giữa các đặc trưng và \texttt{Global\_Sales}.
+
+Tuy nhiên, ở vùng giá trị dự đoán lớn ($\text{fitted values} > 3$), phần dư có xu hướng dương và phân tán rộng hơn, gợi ý sự tồn tại của heteroscedasticity --- phương sai phần dư tăng theo giá trị dự đoán. Đây là đặc trưng phổ biến trong dữ liệu doanh thu thực tế có phân phối lệch phải.
+
+\subsubsection{Biểu đồ 2 --- Normal Q-Q Plot}
+Biểu đồ Q-Q so sánh phân phối thực nghiệm của phần dư chuẩn hóa với phân phối chuẩn lý thuyết. Phần lớn các điểm nằm sát đường đỏ lý thuyết ở vùng trung tâm ($-2$ đến $+2$), xác nhận giả định phân phối chuẩn tương đối được thỏa mãn với khối dữ liệu chính.
+
+Phần đuôi phải lệch mạnh khỏi đường chuẩn --- đây là hệ quả trực tiếp từ đặc trưng phân phối lệch phải (right-skewed) của \texttt{Global\_Sales}, nơi tồn tại các tựa game bom tấn có doanh thu cực cao như Wii Sports (82.53 triệu USD). Kết quả kiểm định Shapiro-Wilk ($p < 0.05$) cũng phù hợp với quan sát trực quan này. Để cải thiện, phép biến đổi $\log(\text{Global\_Sales})$ được gợi ý như một hướng xử lý trong tương lai.
+
+\subsubsection{Biểu đồ 3 --- Scale-Location}
+Biểu đồ Scale-Location vẽ căn bậc hai của giá trị tuyệt đối phần dư chuẩn hóa theo giá trị dự đoán, nhằm kiểm tra tính đồng đều của phương sai (homoscedasticity). Đường làm trơn LOWESS có xu hướng dốc lên rõ rệt, xác nhận hiện tượng heteroscedasticity: phương sai phần dư tăng khi giá trị dự đoán tăng.
+
+Phát hiện này nhất quán với kết quả biểu đồ 1 và phản ánh cấu trúc thực tế của thị trường game --- các tựa game có doanh thu cao thường có độ biến động lớn hơn nhiều so với các tựa game bình thường. Để khắc phục, có thể áp dụng Weighted Least Squares (WLS) hoặc biến đổi logarit biến mục tiêu trước khi huấn luyện.
+
+\subsubsection{Biểu đồ 4 --- Leverage và Cook's Distance}
+Biểu đồ này kết hợp Leverage (mức độ ``đặc biệt'' của một điểm trong không gian đặc trưng) và Cook's Distance (tổng ảnh hưởng của điểm đó lên vector hệ số) để phát hiện các quan sát influential. Phân tích xác định được 315 điểm có Cook's Distance vượt ngưỡng $4/n$.
+
+Các điểm outlier tập trung ở vùng Standardized Residuals lớn ($> 5$) với Leverage thấp, tức là chúng có phần dư lớn nhưng không gây ảnh hưởng mạnh đến ước lượng hệ số. Đây thường là các tựa game cực kỳ nổi tiếng (Nintendo blockbusters) có doanh thu thực tế vượt xa dự đoán của mô hình. Nhóm giữ nguyên các điểm này trong phân tích vì chúng là các quan sát hợp lệ, phản ánh thực tế thị trường chứ không phải lỗi dữ liệu.
 
 \subsection{Feature Importance}
 
-Biểu đồ tầm quan trọng đặc trưng được xây dựng dựa trên giá trị tuyệt đối của hệ số Ridge chuẩn hóa $|\hat{\beta}_j|$, giúp tránh hiện tượng inflate do đa cộng tuyến.
+Tầm quan trọng của từng biến được đánh giá qua độ lớn tuyệt đối của hệ số Ridge sau chuẩn hóa (standardized Ridge coefficients). Lý do sử dụng hệ số Ridge thay vì OLS là để tránh hiện tượng inflation của hệ số OLS khi có multicollinearity --- với 79 đặc trưng sau one-hot encoding, các hệ số OLS có thể bị thổi phồng lên hàng tỷ đơn vị, mất hoàn toàn ý nghĩa diễn giải.
+
+Bước chuẩn hóa (z-score standardization) được thực hiện bởi DataPipeline của thành viên \textbf{Khiêm} trước khi huấn luyện, đảm bảo các hệ số có thể so sánh trực tiếp với nhau bất kể đơn vị đo lường gốc.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\textwidth]{images_Kien_Phan5/feature_importance.png}
-    \caption{Top 20 đặc trưng quan trọng nhất theo hệ số Ridge. \texttt{Critic\_Count} và \texttt{Critic\_Score} nằm trong nhóm đầu, xác nhận kết quả EDA ban đầu.}
+    \caption{Top 20 Feature Importance --- Ridge Regression (hệ số đã chuẩn hóa).}
+    \label{fig:feature_importance}
 \end{figure}
+
+\begin{itemize}
+    \item \textbf{Publisher\_Nintendo đứng đầu ($|\beta| = 1.574$):} Đây là kết quả hoàn toàn hợp lý về mặt kinh tế. Nintendo là nhà phát hành có doanh thu trung bình vượt trội nhờ các thương hiệu nhượng quyền kinh điển (Mario, Zelda, Pokémon). Mô hình đã học được rằng game mang nhãn Nintendo có xu hướng bán chạy hơn đáng kể.
+    \item \textbf{Platform\_NES và Platform\_GB ($|\beta| \approx 1.13 - 1.32$):} Các nền tảng cổ điển này có doanh thu trung bình cao trong dataset do chúng gắn liền với thời kỳ Nintendo thống trị thị trường (1985-1995). Tuy nhiên, cần lưu ý đây một phần phản ánh hiệu ứng của \texttt{Publisher\_Nintendo} hơn là đặc trưng riêng của platform.
+    \item \textbf{User\_Count xuất hiện trong top 10 ($|\beta| \approx 0.30$):} Số lượng người dùng đánh giá là proxy tốt cho mức độ phổ biến của game, có tương quan với doanh thu. Biến này nắm bắt thông tin về quy mô cộng đồng người chơi mà \texttt{Critic\_Score} không thể hiện được.
+    \item \textbf{Genre\_Platform ($|\beta| = 0.237$):} Thể loại Platform (game nhảy/chạy theo màn) có hệ số dương, phù hợp với thực tế rằng nhiều tựa game bom tấn của Nintendo (Mario series) thuộc thể loại này.
+\end{itemize}
 
 \subsection{Kỹ Thuật Nâng Cao: Kernel Ridge Regression}
 
-Kernel Ridge Regression mở rộng Ridge sang không gian đặc trưng phi tuyến thông qua kernel trick:
+\subsubsection{Động lực nghiên cứu}
+OLS và Ridge Regression giả định mối quan hệ tuyến tính toàn cục giữa đặc trưng và biến mục tiêu. Tuy nhiên, dữ liệu doanh thu game có thể chứa các phi tuyến tính cục bộ --- ví dụ, mối quan hệ giữa \texttt{Critic\_Score} và \texttt{Global\_Sales} có thể tăng tốc đột ngột ở vùng điểm rất cao (90-99). Kernel Ridge Regression được triển khai để kiểm chứng giả thuyết này và bổ sung một mô hình phi tham số vào bộ so sánh.
+
+\subsubsection{Cơ sở lý thuyết}
+Kernel Ridge Regression là phương pháp mở rộng OLS sang không gian đặc trưng phi tuyến thông qua kernel trick, theo đúng công thức đề bài mục 2.4:
 \begin{equation}
     \hat{y}(\mathbf{x}) = \mathbf{k}(\mathbf{x})^T (\mathbf{K} + \lambda\mathbf{I})^{-1}\mathbf{y}
 \end{equation}
-với $K_{ij} = k(\mathbf{x}_i, \mathbf{x}_j)$ là ma trận Gram và kernel RBF:
+Trong đó $\mathbf{K}$ là ma trận Gram với $K_{ij} = k(\mathbf{x}_i, \mathbf{x}_j)$, và $k(\cdot,\cdot)$ là hàm kernel RBF (Radial Basis Function):
 \begin{equation}
-    k_{\text{RBF}}(\mathbf{x}, \mathbf{x}') = \exp\left(-\frac{\|\mathbf{x} - \mathbf{x}'\|^2}{2\ell^2}\right)
+    k(\mathbf{x}, \mathbf{x}') = \exp\left(-\frac{\|\mathbf{x} - \mathbf{x}'\|^2}{2\ell^2}\right)
 \end{equation}
+Tham số $\lambda$ đóng vai trò regularization (tương tự Ridge), còn $\ell$ (length scale) kiểm soát độ rộng của vùng ảnh hưởng của mỗi điểm train. Cả hai tham số được chọn đồng thời qua 3-fold Cross-Validation.
 
-\textbf{Cài đặt.} Class \texttt{KernelRidgeRegression} trong file \texttt{part2/advanced\_methods.py} cài đặt thuần NumPy, bao gồm:
-\begin{itemize}
-    \item Tính ma trận Gram $\mathbf{K}$ bằng kernel RBF.
-    \item Giải hệ $(\mathbf{K} + \lambda\mathbf{I})\boldsymbol{\alpha} = \mathbf{y}$ bằng \texttt{np.linalg.solve}.
+\subsubsection{Cài đặt}
+Thuật toán được cài đặt từ đầu bằng Python thuần và NumPy, không sử dụng thư viện sklearn hay scikit-learn, đảm bảo tính minh bạch và phù hợp yêu cầu đề bài. Các bước chính bao gồm:
+\begin{enumerate}
+    \item Tính ma trận Gram $\mathbf{K}$ bằng vectorized NumPy.
+    \item Giải hệ tuyến tính $(\mathbf{K} + \lambda\mathbf{I})\boldsymbol{\alpha} = \mathbf{y}$ bằng \texttt{np.linalg.solve} thay vì nghịch đảo trực tiếp để đảm bảo số trị ổn định.
     \item Dự đoán: $\hat{y} = \mathbf{K}_{\text{test}} \boldsymbol{\alpha}$.
-    \item Chọn $\lambda$ và $\ell$ qua 3-fold Cross-Validation.
-\end{itemize}
+\end{enumerate}
 
+Do chi phí tính toán $\mathcal{O}(n^2)$ khi tính ma trận Gram, Kernel Ridge Regression được huấn luyện trên tập con 300 mẫu train và đánh giá trên 100 mẫu test. Chỉ 4 biến số (\texttt{Critic\_Score}, \texttt{Critic\_Count}, \texttt{User\_Score}, \texttt{User\_Count}) được sử dụng để tránh ``Curse of Dimensionality'' --- khi số chiều quá lớn, khoảng cách Euclidean mất khả năng phân biệt, khiến kernel weight gần như bằng nhau cho mọi cặp điểm.
+
+Class \texttt{KernelRidgeRegression} trong file \texttt{part2/advanced\_methods.py} cài đặt đầy đủ logic này.
+
+\subsubsection{Kết quả}
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{images_Kien_Phan5/kernel_regression_comparison.png}
-    \caption{So sánh Kernel Ridge vs OLS. Trái: ảnh hưởng của $\ell$ (length scale) --- $\ell$ nhỏ gây overfit, $\ell$ lớn gây underfit. Phải: Kernel Ridge bắt được mối quan hệ phi tuyến cục bộ mà OLS tuyến tính bỏ qua.}
+    \caption{Kernel Ridge vs OLS --- ảnh hưởng của length scale $\ell$ (trái) và so sánh trực tiếp (phải).}
+    \label{fig:kernel_comparison}
 \end{figure}
+
+Qua quá trình CV, cặp tham số tối ưu được chọn là $\lambda = 1.0$, $\ell = 1.0$. Kernel Ridge Regression đạt $\text{MAE} = 0.4612$, $\text{RMSE} = 0.8645$, $R^2 = 0.1441$ --- cải thiện nhẹ so với Ridge tuyến tính trên tập con này.
+
+Biểu đồ so sánh trực quan (Hình \ref{fig:kernel_comparison}) minh họa rõ sự khác biệt về cơ chế giữa hai phương pháp: đường dự đoán của Kernel uốn lượn theo cấu trúc cục bộ của dữ liệu, trong khi OLS chỉ có thể fit một đường thẳng toàn cục. Biểu đồ trái cho thấy ảnh hưởng của $\ell$: $\ell$ nhỏ (0.3) gây overfit --- đường dự đoán dao động mạnh theo từng điểm, trong khi $\ell$ lớn (5.0) gây underfit --- đường dự đoán phẳng gần như một hằng số.
+
+\subsubsection{Hạn chế}
+\begin{itemize}
+    \item \textbf{Chi phí tính toán $\mathcal{O}(n^2)$:} Không khả thi với toàn bộ 13,000+ mẫu train. Giải pháp mở rộng: Nyström approximation hoặc Random Fourier Features.
+    \item \textbf{Không có hệ số diễn giải:} Kernel Ridge cho ra vector $\boldsymbol{\alpha}$ thay vì $\boldsymbol{\beta}$, không thể diễn giải trực tiếp tầm quan trọng đặc trưng.
+    \item \textbf{Nhạy cảm với curse of dimensionality:} Phải giới hạn số features đầu vào, làm giảm thông tin so với Ridge tuyến tính dùng đủ 79 đặc trưng.
+\end{itemize}
 
 \subsection{Nhận Xét và Kết Luận Phần 2}
 
