@@ -2,6 +2,15 @@
 
 Đồ án thực hiện hai nội dung chính: trình bày và cài đặt các thành phần nền tảng của Ordinary Least Squares (OLS), sau đó áp dụng hồi quy tuyến tính lên bộ dữ liệu thực tế `Video Games Sales` để dự đoán `Global_Sales`.
 
+## Bộ dữ liệu
+
+- **Tên dữ liệu:** Video Games Sales with Ratings
+- **Nguồn:** Kaggle
+- **File dữ liệu:** `part2/data/video_games_sales.csv`
+- **Kích thước:** 16,719 quan sát và 16 cột
+- **Biến mục tiêu:** `Global_Sales`, biểu diễn doanh thu toàn cầu của game
+- **Đặc điểm chính:** dữ liệu có nhiều giá trị khuyết ở các cột điểm đánh giá như `Critic_Score`, `User_Score`, `Critic_Count`, `User_Count`, phù hợp với yêu cầu xử lý missing values của đồ án.
+
 ## Thành viên nhóm
 
 | Thành viên | MSSV | Vai trò chính |
