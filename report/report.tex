@@ -534,6 +534,37 @@ Dựa trên kết quả chạy thuật toán, nhóm thu được phân phối c�
 \subsection{Mục tiêu khảo sát}
 Phần này thực hiện phân tích đặc điểm cấu trúc dữ liệu và mối quan hệ giữa các biến độc lập với biến mục tiêu \texttt{Global\_Sales} nhằm định hướng cho quá trình tiền xử lý và xây dựng mô hình hồi quy.
 
+\subsection{Phân tích các thuộc tính trong bộ dữ liệu}
+Trước khi xây dựng mô hình, nhóm phân loại các thuộc tính theo ý nghĩa thống kê và vai trò trong bài toán dự báo doanh thu toàn cầu. Việc này giúp xác định biến mục tiêu, biến giải thích, các biến cần loại bỏ do rò rỉ dữ liệu và các biến cần xử lý trước khi huấn luyện.
+
+\begin{table}[H]
+\centering
+\caption{Tóm tắt vai trò và cách xử lý các thuộc tính chính}
+\renewcommand{\arraystretch}{1.25}
+\small
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{p{3.1cm}p{4.8cm}p{3.2cm}p{3.6cm}}
+\rowcolor{reportblue}
+\tableheader{Thuộc tính} & \tableheader{Ý nghĩa} & \tableheader{Vai trò} & \tableheader{Cách xử lý} \\
+\midrule
+\texttt{Name} & Tên trò chơi & Định danh quan sát & Không dùng trực tiếp trong mô hình \\
+\texttt{Platform} & Nền tảng phát hành game & Biến phân loại đầu vào & Điền \texttt{Unknown}, one-hot encoding \\
+\texttt{Year\_of\_Release} & Năm phát hành & Biến thời gian & Không dùng trong pipeline chính do thiếu dữ liệu và cần xử lý riêng \\
+\texttt{Genre} & Thể loại game & Biến phân loại đầu vào & Điền \texttt{Unknown}, one-hot encoding \\
+\texttt{Publisher} & Nhà phát hành & Biến phân loại đầu vào & Giữ top publisher, nhóm còn lại thành \texttt{Other} \\
+\texttt{Critic\_Score} & Điểm đánh giá của chuyên gia & Biến số đầu vào & Chuyển numeric, điền median, chuẩn hóa z-score \\
+\texttt{Critic\_Count} & Số lượt đánh giá của chuyên gia & Biến số đầu vào & Điền median, chuẩn hóa z-score \\
+\texttt{User\_Score} & Điểm đánh giá của người dùng & Biến số đầu vào & Chuyển \texttt{tbd} thành missing, điền median, chuẩn hóa \\
+\texttt{User\_Count} & Số lượt đánh giá của người dùng & Biến số đầu vào & Điền median, chuẩn hóa z-score \\
+\texttt{Developer}, \texttt{Rating} & Nhà phát triển và phân loại độ tuổi & Biến mô tả bổ sung & Không dùng trong pipeline chính để giữ mô hình gọn và ổn định \\
+\texttt{NA\_Sales}, \texttt{EU\_Sales}, \texttt{JP\_Sales}, \texttt{Other\_Sales} & Doanh thu theo khu vực & Biến gây rò rỉ dữ liệu & Loại bỏ khỏi ma trận đặc trưng \\
+\texttt{Global\_Sales} & Tổng doanh thu toàn cầu & Biến mục tiêu & Dùng làm $y$ trong bài toán hồi quy \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Từ bảng trên, nhóm chỉ giữ các thuộc tính mô tả đặc điểm game trước hoặc tại thời điểm đánh giá như \texttt{Platform}, \texttt{Genre}, \texttt{Publisher}, \texttt{Critic\_Score}, \texttt{Critic\_Count}, \texttt{User\_Score} và \texttt{User\_Count}. Các cột doanh thu khu vực bị loại bỏ vì chúng là thành phần cấu thành trực tiếp của \texttt{Global\_Sales}, nếu đưa vào mô hình sẽ làm sai mục tiêu dự báo.
+
 \subsection{Phân tích mối quan hệ giữa các biến (Heatmap)}
 Nhóm sử dụng ma trận tương quan Pearson để đánh giá mức độ liên kết tuyến tính giữa các biến số trong tập dữ liệu.
 
