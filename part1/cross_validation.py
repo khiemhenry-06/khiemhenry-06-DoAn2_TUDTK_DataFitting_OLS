@@ -1,11 +1,8 @@
-# Trần Thanh Nam
-
 import numpy as np
 
 def kfold_cv_split(X, y, k=5, random_seed=None):
     """
-    Chia dữ liệu thành k fold để Cross Validation.
-    Cài đặt thủ công bằng numpy, không dùng sklearn.
+    Chia dữ liệu thành k fold để Cross Validation bằng numpy.
     """
     if random_seed is not None:
         np.random.seed(random_seed)
@@ -14,7 +11,6 @@ def kfold_cv_split(X, y, k=5, random_seed=None):
     indices = np.arange(n_samples)
     np.random.shuffle(indices)
     
-    # Chia đều các phần tử vào k fold
     fold_sizes = np.full(k, n_samples // k, dtype=int)
     fold_sizes[:n_samples % k] += 1
     
@@ -29,9 +25,15 @@ def kfold_cv_split(X, y, k=5, random_seed=None):
         
     return folds
 
-# Test nhanh hàm chạy ổn định
 if __name__ == "__main__":
-    X_test = np.arange(10).reshape(5, 2)
-    y_test = np.arange(5)
-    folds = kfold_cv_split(X_test, y_test, k=2, random_seed=42)
-    print("Đã cài đặt thành công thuật toán K-Fold CV thủ công.")
+    # Minh hoạ K-Fold với dữ liệu giả lập
+    X_sim = np.random.randn(15, 2)
+    y_sim = np.random.randn(15)
+    
+    print("--- Demo chia dữ liệu K-Fold (K=3) ---")
+    folds = kfold_cv_split(X_sim, y_sim, k=3, random_seed=42)
+    
+    for i, (train_idx, test_idx) in enumerate(folds):
+        print(f"Fold {i+1}:")
+        print(f"  Train indices ({len(train_idx)}): {train_idx}")
+        print(f"  Test indices ({len(test_idx)}): {test_idx}\n")
